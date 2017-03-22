@@ -1,0 +1,190 @@
+OnCellChange	myexe.py	/^    def OnCellChange(self, evt):$/;"	m	class:SimpleGrid
+OnCellLeftClick	myexe.py	/^    def OnCellLeftClick(self, evt):$/;"	m	class:SimpleGrid
+OnCellLeftDClick	myexe.py	/^    def OnCellLeftDClick(self, evt):$/;"	m	class:SimpleGrid
+OnCellRightClick	myexe.py	/^    def OnCellRightClick(self, evt):$/;"	m	class:SimpleGrid
+OnCellRightDClick	myexe.py	/^    def OnCellRightDClick(self, evt):$/;"	m	class:SimpleGrid
+OnColSize	myexe.py	/^    def OnColSize(self, evt):$/;"	m	class:SimpleGrid
+OnEditorCreated	myexe.py	/^    def OnEditorCreated(self, evt):$/;"	m	class:SimpleGrid
+OnEditorHidden	myexe.py	/^    def OnEditorHidden(self, evt):$/;"	m	class:SimpleGrid
+OnEditorShown	myexe.py	/^    def OnEditorShown(self, evt):$/;"	m	class:SimpleGrid
+OnIdle	myexe.py	/^    def OnIdle(self, evt):$/;"	m	class:SimpleGrid
+OnLabelLeftClick	myexe.py	/^    def OnLabelLeftClick(self, evt):$/;"	m	class:SimpleGrid
+OnLabelLeftDClick	myexe.py	/^    def OnLabelLeftDClick(self, evt):$/;"	m	class:SimpleGrid
+OnLabelRightClick	myexe.py	/^    def OnLabelRightClick(self, evt):$/;"	m	class:SimpleGrid
+OnLabelRightDClick	myexe.py	/^    def OnLabelRightDClick(self, evt):$/;"	m	class:SimpleGrid
+OnRangeSelect	myexe.py	/^    def OnRangeSelect(self, evt):$/;"	m	class:SimpleGrid
+OnRowSize	myexe.py	/^    def OnRowSize(self, evt):$/;"	m	class:SimpleGrid
+OnSelectCell	myexe.py	/^    def OnSelectCell(self, evt):$/;"	m	class:SimpleGrid
+SimpleGrid	myexe.py	/^class SimpleGrid(gridlib.Grid):$/;"	c
+TestFrame	myexe.py	/^class TestFrame(wx.Frame):$/;"	c
+__init__	myexe.py	/^    def __init__(self, parent):$/;"	m	class:SimpleGrid
+__init__	myexe.py	/^    def __init__(self, parent):$/;"	m	class:TestFrame
+app	myexe.py	/^app = wx.App(0)$/;"	v
+frame	myexe.py	/^frame = TestFrame(None)$/;"	v
+gridlib	myexe.py	/^import wx.grid as gridlib$/;"	i
+wx	myexe.py	/^import wx$/;"	i
+wx	myexe.py	/^import wx.grid as gridlib$/;"	i
+Example	mytest.py	/^class Example(wx.Frame):  $/;"	c
+InitUI	mytest.py	/^    def InitUI(self):  $/;"	m	class:Example
+__init__	mytest.py	/^    def __init__(self,parent,title):  $/;"	m	class:Example
+app	mytest.py	/^    app = wx.App()  $/;"	v	class:Example
+wx	mytest.py	/^import wx  $/;"	i
+Config	ririshun.py	/^import util.Config as Config$/;"	i
+DashBoard	ririshun.py	/^class DashBoard ( wx.Frame ):$/;"	c
+Errmsg	ririshun.py	/^	def Errmsg(self,msg):$/;"	m	class:DashBoard
+InitRegisterSeivice	ririshun.py	/^	def InitRegisterSeivice(self):$/;"	m	class:DashBoard
+InitService	ririshun.py	/^	def InitService(self):$/;"	m	class:DashBoard
+InitUI	ririshun.py	/^	def InitUI( self ):$/;"	m	class:DashBoard
+LogOut	ririshun.py	/^class LogOut:$/;"	c
+MyApp	ririshun.py	/^class MyApp(wx.App):$/;"	c
+MyPage	ririshun.py	/^class MyPage( wx.NotebookPage):$/;"	c
+OnInit	ririshun.py	/^	def OnInit(self) :$/;"	m	class:MyApp
+Queue	ririshun.py	/^import Queue,threading$/;"	i
+RegisterRobot	ririshun.py	/^	def RegisterRobot(self):$/;"	m	class:DashBoard
+__init__	ririshun.py	/^	def __init__(self, parent):$/;"	m	class:DashBoard
+__init__	ririshun.py	/^	def __init__(self, parent,Name):$/;"	m	class:MyPage
+__init__	ririshun.py	/^	def __init__(self,obj):$/;"	m	class:LogOut
+app	ririshun.py	/^	app = MyApp()$/;"	v
+getLocalIp	ririshun.py	/^def getLocalIp() :$/;"	f
+getMobile	ririshun.py	/^	def getMobile(self):$/;"	m	class:DashBoard
+handelLogin	ririshun.py	/^	def handelLogin( self, event = False ) :$/;"	m	class:DashBoard
+log	ririshun.py	/^	def log(self, msg):$/;"	m	class:DashBoard
+math	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+os	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+outlog	ririshun.py	/^	def outlog(self,msg):$/;"	m	class:DashBoard
+output	ririshun.py	/^	def output(self):$/;"	m	class:DashBoard
+output	ririshun.py	/^	def output(self):$/;"	m	class:LogOut
+re	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+richtext	ririshun.py	/^import wx.richtext$/;"	i
+socket	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+sys	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+threading	ririshun.py	/^import Queue,threading$/;"	i
+time	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+util	ririshun.py	/^import util.Config as Config$/;"	i
+write	ririshun.py	/^	def write(self,s):$/;"	m	class:LogOut
+wx	ririshun.py	/^import wx,os,sys,re,math,socket,time$/;"	i
+wx	ririshun.py	/^import wx.richtext$/;"	i
+MyThread	test.py	/^class MyThread(threading.Thread):$/;"	c
+Queue	test.py	/^import Queue$/;"	i
+ThreadPool	test.py	/^class ThreadPool:$/;"	c
+__createThreadPool	test.py	/^ def __createThreadPool( self, num_of_threads ):$/;"	m	class:ThreadPool	file:
+__init__	test.py	/^	def __init__(self, workQueue, resultQueue,timeout=30, **kwargs):$/;"	m	class:MyThread
+__init__	test.py	/^ def __init__( self, num_of_threads=10):$/;"	m	class:ThreadPool
+add_job	test.py	/^ def add_job( self, callable, *args, **kwargs ):$/;"	m	class:ThreadPool
+run	test.py	/^	def run(self):$/;"	m	class:MyThread
+sys	test.py	/^import sys$/;"	i
+test	test.py	/^def test():$/;"	f
+test_job	test.py	/^def test_job(id, sleep = 0.001 ):$/;"	f
+threading	test.py	/^import threading$/;"	i
+time	test.py	/^import time$/;"	i
+urllib	test.py	/^import urllib$/;"	i
+wait_for_complete	test.py	/^ def wait_for_complete(self):$/;"	m	class:ThreadPool
+AiMaService	util\AiMaService.py	/^class AiMaService(object):$/;"	c
+Config	util\AiMaService.py	/^import functions,Config$/;"	i
+MSGINFO	util\AiMaService.py	/^	MSGINFO = {$/;"	v	class:AiMaService
+StringIO	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+TOKEN	util\AiMaService.py	/^	TOKEN   = ''$/;"	v	class:AiMaService
+UID	util\AiMaService.py	/^	UID     = ''$/;"	v	class:AiMaService
+__init__	util\AiMaService.py	/^	def __init__(self):$/;"	m	class:AiMaService
+addIgnoreList	util\AiMaService.py	/^	def addIgnoreList( self, pid, mobiles ):$/;"	m	class:AiMaService
+checkInLogin	util\AiMaService.py	/^	def checkInLogin(self):$/;"	m	class:AiMaService
+copy	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+datetime	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+functions	util\AiMaService.py	/^import functions,Config$/;"	i
+getMobileNum	util\AiMaService.py	/^	def getMobileNum(self):$/;"	m	class:AiMaService
+getRecvingInfo	util\AiMaService.py	/^	def getRecvingInfo( self, pid ):$/;"	m	class:AiMaService
+getSmsStatus	util\AiMaService.py	/^	def getSmsStatus( self ):$/;"	m	class:AiMaService
+getUserInfos	util\AiMaService.py	/^	def getUserInfos(self):$/;"	m	class:AiMaService
+getVcodeAndHoldMobilenum	util\AiMaService.py	/^	def getVcodeAndHoldMobilenum(self, mobile, authorUid, nextPid):$/;"	m	class:AiMaService
+getVcodeAndReleaseMobile	util\AiMaService.py	/^	def getVcodeAndReleaseMobile(self, mobile, authorUid):$/;"	m	class:AiMaService
+loginIn	util\AiMaService.py	/^	def loginIn(self, username, password):$/;"	m	class:AiMaService
+os	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+pycurl	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+random	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+re	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+sendSms	util\AiMaService.py	/^	def sendSms( self ):$/;"	m	class:AiMaService
+sys	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+time	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+types	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+urllib	util\AiMaService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+AIMA_BASE_URL	util\Config.py	/^AIMA_BASE_URL = 'http:\/\/api.f02.cn\/http.do?'$/;"	v
+AIMA_MOBILE_MAX_NUM	util\Config.py	/^AIMA_MOBILE_MAX_NUM = 1$/;"	v
+AIMA_REGISTER_PID	util\Config.py	/^AIMA_REGISTER_PID   = 2729$/;"	v
+AIMA_REGISTER_T_NUM	util\Config.py	/^AIMA_REGISTER_T_NUM = 1 #注册线程数$/;"	v
+CACHE_DIR	util\Config.py	/^CACHE_DIR = ROOT_DIR+'\/cache\/'$/;"	v
+REGISTER_ICON	util\Config.py	/^REGISTER_ICON   = '\/3.ico'$/;"	v
+REGISTER_INDEX	util\Config.py	/^REGISTER_INDEX  = 'http:\/\/www.rrs.com\/'$/;"	v
+REGISTER_NAME	util\Config.py	/^REGISTER_NAME   = u'日日顺注册机'$/;"	v
+REGISTER_URL	util\Config.py	/^REGISTER_URL    = 'http:\/\/www.rrs.com\/register'$/;"	v
+ROOT_DIR	util\Config.py	/^ROOT_DIR  = os.path.dirname(sys.argv[0])$/;"	v
+os	util\Config.py	/^import sys, os$/;"	i
+sys	util\Config.py	/^import sys, os$/;"	i
+OnCellChange	util\NewGrid.py	/^    def OnCellChange(self, evt):$/;"	m	class:SimpleGrid
+OnCellLeftClick	util\NewGrid.py	/^    def OnCellLeftClick(self, evt):$/;"	m	class:SimpleGrid
+OnCellLeftDClick	util\NewGrid.py	/^    def OnCellLeftDClick(self, evt):$/;"	m	class:SimpleGrid
+OnCellRightClick	util\NewGrid.py	/^    def OnCellRightClick(self, evt):$/;"	m	class:SimpleGrid
+OnCellRightDClick	util\NewGrid.py	/^    def OnCellRightDClick(self, evt):$/;"	m	class:SimpleGrid
+OnColSize	util\NewGrid.py	/^    def OnColSize(self, evt):$/;"	m	class:SimpleGrid
+OnEditorCreated	util\NewGrid.py	/^    def OnEditorCreated(self, evt):$/;"	m	class:SimpleGrid
+OnEditorHidden	util\NewGrid.py	/^    def OnEditorHidden(self, evt):$/;"	m	class:SimpleGrid
+OnEditorShown	util\NewGrid.py	/^    def OnEditorShown(self, evt):$/;"	m	class:SimpleGrid
+OnIdle	util\NewGrid.py	/^    def OnIdle(self, evt):$/;"	m	class:SimpleGrid
+OnLabelLeftClick	util\NewGrid.py	/^    def OnLabelLeftClick(self, evt):$/;"	m	class:SimpleGrid
+OnLabelLeftDClick	util\NewGrid.py	/^    def OnLabelLeftDClick(self, evt):$/;"	m	class:SimpleGrid
+OnLabelRightClick	util\NewGrid.py	/^    def OnLabelRightClick(self, evt):$/;"	m	class:SimpleGrid
+OnLabelRightDClick	util\NewGrid.py	/^    def OnLabelRightDClick(self, evt):$/;"	m	class:SimpleGrid
+OnRangeSelect	util\NewGrid.py	/^    def OnRangeSelect(self, evt):$/;"	m	class:SimpleGrid
+OnRowSize	util\NewGrid.py	/^    def OnRowSize(self, evt):$/;"	m	class:SimpleGrid
+OnSelectCell	util\NewGrid.py	/^    def OnSelectCell(self, evt):$/;"	m	class:SimpleGrid
+SimpleGrid	util\NewGrid.py	/^class SimpleGrid(gridlib.Grid):$/;"	c
+__init__	util\NewGrid.py	/^    def __init__(self, parent):$/;"	m	class:SimpleGrid
+gridlib	util\NewGrid.py	/^import wx.grid as gridlib$/;"	i
+wx	util\NewGrid.py	/^import wx$/;"	i
+wx	util\NewGrid.py	/^import wx.grid as gridlib$/;"	i
+Config	util\RegisterService.py	/^import functions,Config$/;"	i
+RegisterService	util\RegisterService.py	/^class RegisterService(object):$/;"	c
+StringIO	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+__init__	util\RegisterService.py	/^	def __init__(self):$/;"	m	class:RegisterService
+copy	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+datetime	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+functions	util\RegisterService.py	/^import functions,Config$/;"	i
+getValifyCode	util\RegisterService.py	/^	def getValifyCode(self):$/;"	m	class:RegisterService
+os	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+pycurl	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+random	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+re	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+register	util\RegisterService.py	/^	def register(self):$/;"	m	class:RegisterService
+sys	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+time	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+types	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+urllib	util\RegisterService.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib,types,time,datetime$/;"	i
+StringIO	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+__init__	util\downhtml.py	/^    def __init__(self):$/;"	m	class:downHtml
+copy	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+curl	util\downhtml.py	/^    def curl(self,url,errnum=0):$/;"	m	class:downHtml
+downHtml	util\downhtml.py	/^class downHtml:$/;"	c
+headerw	util\downhtml.py	/^    def headerw(self,buf):$/;"	m	class:downHtml
+iconv	util\downhtml.py	/^    def iconv(self,code,newcode,str):$/;"	m	class:downHtml
+os	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+pycurl	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+random	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+re	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+read	util\downhtml.py	/^    def read(self,path,mod='r'):$/;"	m	class:downHtml
+replace	util\downhtml.py	/^    def replace(self,ReString,ArrList,StrCode=False):$/;"	m	class:downHtml
+sys	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+types	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+urllib	util\downhtml.py	/^import sys,os,types,pycurl,StringIO,random,re,copy,urllib$/;"	i
+writes	util\downhtml.py	/^    def writes(self,strA,filename,mod='wb'):$/;"	m	class:downHtml
+datetime	util\functions.py	/^import re,urllib2, time, datetime$/;"	i
+getLocalIp	util\functions.py	/^def getLocalIp() :$/;"	f
+getNowTime	util\functions.py	/^def getNowTime():$/;"	f
+re	util\functions.py	/^import re,urllib2, time, datetime$/;"	i
+strftime	util\functions.py	/^def strftime():$/;"	f
+time	util\functions.py	/^import re,urllib2, time, datetime$/;"	i
+urllib2	util\functions.py	/^import re,urllib2, time, datetime$/;"	i
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/

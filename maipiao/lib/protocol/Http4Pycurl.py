@@ -1,17 +1,20 @@
 # -*- coding: utf-8
-import pycurl,StringIO
+import pycurl
+import StringIO
+
 
 class Http4Pycurl:
 
-    def __init__(self):
-        self.cookie_path = None
-    	self.data= {}
+    def __init__(self, cookie_path=None):
+        self.__cookie_path = cookie_path
+        self.__header = None
 
-    def curl(self, url, method='GET', data={}):
+    def curl(self, url, method, data):
         try:
             c = pycurl.Curl()
-        except:
+        except pycurl.error, e:
             return False
+
         io_buf = StringIO.StringIO()
         c.setopt(pycurl.URL, url)
         c.setopt(pycurl.WRITEFUNCTION, io_buf.write)
@@ -22,16 +25,16 @@ class Http4Pycurl:
         if method == 'POST':
             if not data:
                 links = url.split('?',1)
-                if len(links)==2:
+                if len(links) == 2:
                     data=links[1]
                 else:
-                    data=''
+                    data = ''
 
             c.setopt(pycurl.POST, True)
             c.setopt(pycurl.POSTFIELDS, data)
-        if self.cookie_path:
-            c.setopt(pycurl.COOKIEFILE, self.cookie_path)
-            c.setopt(pycurl.COOKIEJAR, self.cookie_path)
+        if self.__cookie_path:
+            c.setopt(pycurl.COOKIEFILE, self.__cookie_path)
+            c.setopt(pycurl.COOKIEJAR, self.__cookie_path)
         try:
             c.perform()
         except:
@@ -41,7 +44,7 @@ class Http4Pycurl:
             content_type = c.getinfo(c.CONTENT_TYPE)
             value = io_buf.getvalue()
             c.close()
-            if http_code>=400:
+            if http_code >= 400:
                 return False
 
             return value
@@ -53,22 +56,20 @@ class Http4Pycurl:
             except:
                 pass
             return False
-
+    '''
+    GET请求
+    '''
     def get(self, url):
-        '''
-            GET请求
-        '''
-    	return self.curl(url)
+        return self.curl(url, 'GET', None)
 
-    def set_cookie_path(self, file_path):
-    	self.cookie_path=file_path
-
-	def set_header(self):
-		pass
+    def set_header(self):
+        pass
 
     def ajax_post(self, url, data):
-    	pass
+        pass
 
+    def post(self, url, data):
+        return self.curl(url, 'POST', data)
 
 if __name__ == '__main__':
     handler = Http4Pycurl()

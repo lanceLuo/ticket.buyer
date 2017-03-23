@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import wx,os,sys
-
+import wx
+import os
+import sys
+from lib.TicketBuyer import TicketBuyer
 
 class MainFrame(wx.Frame):
     def __init__(self, parent):
@@ -14,6 +16,7 @@ class MainFrame(wx.Frame):
         # 设置背景颜色
         # self.SetBackgroundColour(wx.Colour(236, 233, 216))
 
+        TicketBuyer('luohao', '123456', 15858235432)
     '''
     菜单数据
     '''

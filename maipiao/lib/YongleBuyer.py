@@ -6,34 +6,53 @@ from lib.protocol.Http4Pycurl import Http4Pycurl
 import cookielib
 import time
 from common.Settings import *
+import json
 
-class TicketBuyer:
+
+class YongleBuyer:
 
     def __init__(self, login_name, password, phone):
-        self.login_url = YONGLE_LOGIN_URL
+        self.login_url = 'http://www.228.com.cn/auth/login'
+        self.user_info_url = 'http://www.228.com.cn/ajax/getUserInfoFact'
         self.login_name = str(login_name)
         self.password = str(password)
         self.phone = phone
         self.cookie = self.get_cookie_file_path()
-        self.nick_name = self.get_cookie_by_name('damai.cn_nickName')
-        if not self.nick_name:
+        self.user_info = self.get_user_info()
+        if not self.user_info:
             self.__init_login()
+            self.user_info = self.get_user_info()
+        print self.user_info
+
+    def get_user_info(self):
+        curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
+        json_str = curl.get(self.user_info_url)
+        user_info = None
+        if isinstance(json_str, str):
+            try:
+                user_info = json.loads(json_str)
+                if not isinstance(user_info, dict):
+                    print "a"
+                    user_info = None
+                else:
+                    if not user_info['status']:
+                        user_info = None
+            except:
+                pass
+
+        return user_info
 
     '''
     登录
     '''
     def __init_login(self):
         data = {
-            'token': str(int(round(time.time() * 1000))),
-            'nationPerfix': 86,
-            'login_email': self.login_name,
-            'login_pwd': self.password
+            'username': self.login_name,
+            'password': self.password
         }
         curl = Http4Pycurl(self.cookie)
         html = curl.post(self.login_url, data)
         print html
-        self.nick_name = self.get_cookie_by_name('damai.cn_nickName')
-        print self.nick_name
 
     '''
     是否登录

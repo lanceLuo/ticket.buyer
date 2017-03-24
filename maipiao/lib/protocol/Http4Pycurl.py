@@ -5,9 +5,11 @@ import StringIO
 
 class Http4Pycurl:
 
-    def __init__(self, cookie_path=None):
+    def __init__(self, cookie_path=None, refferer=None):
         self.__cookie_path = cookie_path
         self.__header = None
+        self.__refferer = refferer
+        self.__user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36'
 
     def curl(self, url, method, data):
         try:
@@ -22,16 +24,22 @@ class Http4Pycurl:
         c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.setopt(pycurl.SSL_VERIFYHOST, 0)
         c.setopt(pycurl.ENCODING, "gzip,deflate,sdch")
+        c.setopt(pycurl.USERAGENT, self.__user_agent)
+        if self.__refferer:
+            c.setopt(pycurl.REFERER, self.__refferer)
+
         if method == 'POST':
+            fields = ''
             if not data:
                 links = url.split('?',1)
                 if len(links) == 2:
-                    data=links[1]
-                else:
-                    data = ''
-
+                    fields = links[1]
+            if isinstance(data, dict):
+                for k in data:
+                    fields = fields + (k + "=" + str(data[k]) + "&")
             c.setopt(pycurl.POST, True)
-            c.setopt(pycurl.POSTFIELDS, data)
+            c.setopt(pycurl.POSTFIELDS, fields)
+
         if self.__cookie_path:
             c.setopt(pycurl.COOKIEFILE, self.__cookie_path)
             c.setopt(pycurl.COOKIEJAR, self.__cookie_path)

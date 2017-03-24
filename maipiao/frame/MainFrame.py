@@ -4,6 +4,7 @@ import wx
 import os
 import sys
 from lib.TicketBuyer import TicketBuyer
+from lib.YongleBuyer import YongleBuyer
 
 class MainFrame(wx.Frame):
     def __init__(self, parent):
@@ -16,7 +17,7 @@ class MainFrame(wx.Frame):
         # 设置背景颜色
         # self.SetBackgroundColour(wx.Colour(236, 233, 216))
 
-        TicketBuyer('luohao', '123456', 15858235432)
+        YongleBuyer('13040866253', 'Qaz123456', 13040866253)
     '''
     菜单数据
     '''
@@ -26,9 +27,8 @@ class MainFrame(wx.Frame):
         return [(u"&文件", (             # 一级菜单项
                            (u"&导入购票人", "New paint file", self.on_new),             # 二级菜单项
                            (u"&查询购票记录", "Open paint file", self.on_open),
-                           ("&Save", "Save paint file", self.on_open),
                            ("", "", ""),                                       # 分隔线
-                           ("&Quit", "Quit", self.on_close_window)))
+                           (u"&退出", "Quit", self.on_close_window)))
        ]
 
     '''

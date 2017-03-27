@@ -3,9 +3,8 @@ import os
 import sys
 import hashlib
 from lib.protocol.Http4Pycurl import Http4Pycurl
+from parsert.TicketInfoParser import TicketInfoParser
 import cookielib
-import time
-from common.Settings import *
 import json
 
 
@@ -18,11 +17,13 @@ class YongleBuyer:
         self.password = str(password)
         self.phone = phone
         self.cookie = self.get_cookie_file_path()
-        self.user_info = self.get_user_info()
-        if not self.user_info:
-            self.__init_login()
-            self.user_info = self.get_user_info()
-        print self.user_info
+        # self.user_info = self.get_user_info()
+        # if not self.user_info:
+        #     self.__init_login()
+        #     self.user_info = self.get_user_info()
+        # print self.user_info
+
+        self.ticket_info_page('http://www.228.com.cn/ticket-222732484.html')
 
     def get_user_info(self):
         curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
@@ -91,3 +92,13 @@ class YongleBuyer:
         path = cookie_dir + path + '.txt'
 
         return path
+
+    def ticket_info_page(self, url):
+        curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
+        html = curl.get(url)
+        print html
+        p = TicketInfoParser()
+        p.feed(html)
+        p.close()
+        print p.tickets[0]
+

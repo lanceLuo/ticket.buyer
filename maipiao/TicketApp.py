@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import wx
-import os
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 from frame.MainFrame import MainFrame
 
 

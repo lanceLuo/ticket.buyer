@@ -11,7 +11,10 @@ class Http4Pycurl:
         self.__refferer = refferer
         self.__user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36'
 
-    def curl(self, url, method, data):
+    def curl(self, url, method, data, retries):
+        if retries <= 0:
+            return False
+
         try:
             c = pycurl.Curl()
         except pycurl.error, e:
@@ -67,17 +70,17 @@ class Http4Pycurl:
     '''
     GET请求
     '''
-    def get(self, url):
-        return self.curl(url, 'GET', None)
+    def get(self, url, retries=1):
+        return self.curl(url, 'GET', None, retries)
 
     def set_header(self):
         pass
 
-    def ajax_post(self, url, data):
+    def ajax_post(self, url, data, retries=1):
         pass
 
-    def post(self, url, data):
-        return self.curl(url, 'POST', data)
+    def post(self, url, data, retries=1):
+        return self.curl(url, 'POST', data, retries)
 
 if __name__ == '__main__':
     handler = Http4Pycurl()

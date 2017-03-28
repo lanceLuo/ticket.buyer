@@ -4,6 +4,7 @@ import sys
 import hashlib
 from lib.protocol.Http4Pycurl import Http4Pycurl
 from parsert.TicketInfoParser import TicketInfoParser
+from parsert.ConfirmOrderParser import ConfirmOrderParser
 import cookielib
 import json
 
@@ -13,35 +14,35 @@ class YongleBuyer:
     def __init__(self, login_name, password, phone):
         self.login_url = 'http://www.228.com.cn/auth/login'
         self.user_info_url = 'http://www.228.com.cn/ajax/getUserInfoFact'
+        self.confirm_url = 'http://www.228.com.cn/cart/toOrderSure.html'
         self.login_name = str(login_name)
         self.password = str(password)
         self.phone = phone
         self.cookie = self.get_cookie_file_path()
-        # self.user_info = self.get_user_info()
-        # if not self.user_info:
-        #     self.__init_login()
-        #     self.user_info = self.get_user_info()
-        # print self.user_info
+        self.user_info = None
 
-        self.ticket_info_page('http://www.228.com.cn/ticket-222732484.html')
-
-    def get_user_info(self):
-        curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
-        json_str = curl.get(self.user_info_url)
-        user_info = None
-        if isinstance(json_str, str):
-            try:
-                user_info = json.loads(json_str)
-                if not isinstance(user_info, dict):
-                    print "a"
-                    user_info = None
-                else:
-                    if not user_info['status']:
+    '''
+    '''
+    def http_worker(self, reffer = None):
+        if not self.user_info:
+            self.__init_login()
+            curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
+            json_str = curl.get(self.user_info_url)
+            user_info = None
+            if isinstance(json_str, str):
+                try:
+                    user_info = json.loads(json_str)
+                    if not isinstance(user_info, dict):
                         user_info = None
-            except:
-                pass
+                    else:
+                        if not user_info['status']:
+                            user_info = None
+                except:
+                    pass
+            self.user_info = user_info
 
-        return user_info
+        worker = Http4Pycurl(self.cookie, reffer)
+        return worker
 
     '''
     登录
@@ -93,12 +94,37 @@ class YongleBuyer:
 
         return path
 
+    '''
+    '''
     def ticket_info_page(self, url):
-        curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
-        html = curl.get(url)
-        print html
-        p = TicketInfoParser()
-        p.feed(html)
-        p.close()
-        print p.tickets[0]
+        reffer = 'http://www.228.com.cn'
+        html = self.http_worker().get(url, reffer)
+        if not html:
+            return False
+        ticket_parser = TicketInfoParser()
+        ticket_parser.feed(html)
+        ticket_parser.close()
+        return ticket_parser.tickets
 
+    '''
+    '''
+    def buy(self, ticket_url):
+        productid = str(222732484)
+        tickets = self.ticket_info_page(ticket_url)
+        sd = s1 = s2 = ''
+        if tickets and isinstance(tickets, list):
+            for each in tickets:
+                if each['over']:
+                    continue
+                s1 = s1 + each['ticketid'] + ','
+                s2 = s2 + '1,'
+            sd = s1[0:-1] + '^' + s2[0:-1]
+
+        confirm_url = self.confirm_url + '?pid={}&sd={}&quickBuyType=-1'.format(productid, sd)
+        confirm_html = self.http_worker(ticket_url).get(confirm_url)
+        if confirm_html:
+            confirm_parser = ConfirmOrderParser()
+            confirm_parser.feed(confirm_html)
+            post_url = confirm_parser.form_post_url
+            post_data = confirm_parser.form_post_dict
+            res = self.http_worker(confirm_url).post(post_url, post_data)

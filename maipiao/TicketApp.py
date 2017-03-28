@@ -2,9 +2,9 @@
 
 import wx
 import sys
+from frame.MainFrame import MainFrame
 reload(sys)
 sys.setdefaultencoding('utf-8')
-from frame.MainFrame import MainFrame
 
 
 class TicketApp(wx.App):

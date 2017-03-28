@@ -6,6 +6,7 @@ import sys
 from lib.TicketBuyer import TicketBuyer
 from lib.YongleBuyer import YongleBuyer
 
+
 class MainFrame(wx.Frame):
     def __init__(self, parent):
         self.title = u"购票助手"
@@ -16,8 +17,9 @@ class MainFrame(wx.Frame):
         self.SetIcon(wx.Icon(os.path.dirname(sys.argv[0]) + '/res/title.ico', wx.BITMAP_TYPE_ICO))
         # 设置背景颜色
         # self.SetBackgroundColour(wx.Colour(236, 233, 216))
-
-        YongleBuyer('13040866253', 'Qaz123456', 13040866253)
+        ticket_url = 'http://www.228.com.cn/ticket-222732484.html'
+        s = YongleBuyer('13040866253', 'Qaz123456', 13040866253)
+        s.buy(ticket_url)
     '''
     菜单数据
     '''

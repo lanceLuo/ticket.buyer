@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 import pycurl
 import StringIO
-
+import urllib
 
 class Http4Pycurl:
 
@@ -32,16 +32,16 @@ class Http4Pycurl:
             c.setopt(pycurl.REFERER, self.__refferer)
 
         if method == 'POST':
-            fields = ''
-            if not data:
-                links = url.split('?',1)
-                if len(links) == 2:
-                    fields = links[1]
-            if isinstance(data, dict):
-                for k in data:
-                    fields = fields + (k + "=" + str(data[k]) + "&")
+            # fields = ''
+            # if not data:
+            #     links = url.split('?',1)
+            #     if len(links) == 2:
+            #         fields = links[1]
+            # if isinstance(data, dict):
+            #     for k in data:
+            #         fields = fields + (k + "=" + str(data[k]) + "&")
             c.setopt(pycurl.POST, True)
-            c.setopt(pycurl.POSTFIELDS, fields)
+            c.setopt(pycurl.POSTFIELDS, urllib.urlencode(data))
 
         if self.__cookie_path:
             c.setopt(pycurl.COOKIEFILE, self.__cookie_path)

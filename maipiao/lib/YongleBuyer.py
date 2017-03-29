@@ -7,6 +7,7 @@ from parsert.TicketInfoParser import TicketInfoParser
 from parsert.ConfirmOrderParser import ConfirmOrderParser
 import cookielib
 import json
+import re
 
 
 class YongleBuyer:
@@ -14,7 +15,7 @@ class YongleBuyer:
     def __init__(self, login_name, password, phone):
         self.login_url = 'http://www.228.com.cn/auth/login'
         self.user_info_url = 'http://www.228.com.cn/ajax/getUserInfoFact'
-        self.confirm_url = 'http://www.228.com.cn/cart/toOrderSure.html'
+        self.confirm_url = 'http://www.228.com.cn/cart/toOrderSure.html?pid={}&sd={}&quickBuyType=-1'
         self.login_name = str(login_name)
         self.password = str(password)
         self.phone = phone
@@ -25,20 +26,15 @@ class YongleBuyer:
     '''
     def http_worker(self, reffer = None):
         if not self.user_info:
-            self.__init_login()
             curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
             json_str = curl.get(self.user_info_url)
-            user_info = None
-            if isinstance(json_str, str):
-                try:
-                    user_info = json.loads(json_str)
-                    if not isinstance(user_info, dict):
-                        user_info = None
-                    else:
-                        if not user_info['status']:
-                            user_info = None
-                except:
-                    pass
+            user_info = json.loads(json_str)
+            if not user_info['status']:
+                print "login"
+                self.__init_login()
+                json_str = curl.get(self.user_info_url)
+                user_info = json.loads(json_str)
+            print user_info
             self.user_info = user_info
 
         worker = Http4Pycurl(self.cookie, reffer)
@@ -54,7 +50,6 @@ class YongleBuyer:
         }
         curl = Http4Pycurl(self.cookie)
         html = curl.post(self.login_url, data)
-        print html
 
     '''
     是否登录
@@ -108,23 +103,46 @@ class YongleBuyer:
 
     '''
     '''
-    def buy(self, ticket_url):
-        productid = str(222732484)
+    def buy(self, ticket_url, is_self_take=False):
+        # http://www.228.com.cn/ticket-234938278.html
+        productid = re.findall(r'ticket-(.+)\.html', ticket_url)[0]
         tickets = self.ticket_info_page(ticket_url)
         sd = s1 = s2 = ''
         if tickets and isinstance(tickets, list):
             for each in tickets:
                 if each['over']:
                     continue
-                s1 = s1 + each['ticketid'] + ','
-                s2 = s2 + '1,'
+                s1 = '{}{},'.format(s1, each['ticketid'])
+                s2 += '1,'
+                break
             sd = s1[0:-1] + '^' + s2[0:-1]
-
-        confirm_url = self.confirm_url + '?pid={}&sd={}&quickBuyType=-1'.format(productid, sd)
+        confirm_url = self.confirm_url.format(productid, sd)
         confirm_html = self.http_worker(ticket_url).get(confirm_url)
         if confirm_html:
             confirm_parser = ConfirmOrderParser()
             confirm_parser.feed(confirm_html)
             post_url = confirm_parser.form_post_url
             post_data = confirm_parser.form_post_dict
+            order_source_val = confirm_parser.order_source_val
+            if order_source_val:
+                post_data["o['orderSource']"] = order_source_val
+            post_data["o['payid']"] = '2217200'  # 使用支付宝支付
+            post_data['discountdetailid'] = '2217200'
+            post_data['activeNo'] = -1
+            post_data["o['addressid']"] = '11357794'  # 配送地址ID
+            # [{"cityid":1,"tickets":"234938479^1","shipment":1,"insurance":0,"cashno":"0","renewal":"0.00"}]
+            purchases = [
+                {
+                    "tickets": post_data["o['tickets']"],#购买信息
+                    "insurance": "0",  # 不购买保险
+                    "cashno": "0",
+                    "cityid": 1,
+                    "shipment": 1,
+                    "renewal": "0.00"
+                }
+            ]
+            post_data["o['purchases']"] = json.dumps(purchases)
+            # print post_url
+            # print post_data
             res = self.http_worker(confirm_url).post(post_url, post_data)
+            print res

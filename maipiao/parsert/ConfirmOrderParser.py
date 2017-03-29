@@ -10,6 +10,7 @@ class ConfirmOrderParser(HTMLParser):
         self.in_form = False
         self.form_post_url = None
         self.form_post_dict = {}
+        self.order_source_val = None
 
     def handle_starttag(self, tag, attrs):
         def _attr(attrlist, attrname):
@@ -23,13 +24,9 @@ class ConfirmOrderParser(HTMLParser):
         elif self.in_form and tag == 'input':
             name = _attr(attrs, 'name')
             value = _attr(attrs, 'value')
-            if name.find('['):
-                k = re.findall(r"(.+)\[", name)
-                v = re.findall(r".+\['(.+)'\]", name)
-                if k:
-                    self.form_post_dict[name][k[0]] = v[0]
-            else:
-                self.form_post_dict[name] = value
+            self.form_post_dict[name] = value
+        elif tag == 'input' and _attr(attrs, 'id') == 'orderSourceVal':
+            self.order_source_val = _attr(attrs, 'value')
         else:
             pass
 

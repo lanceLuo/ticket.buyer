@@ -25,7 +25,5 @@
 #
 # print compose_debug_url('http://www.example.com/content/page?name=john&age=35')
 # print compose_debug_url('http://www.example.com/')
-a = [1,2,3]
-t = a.pop(0)
-print t
-print a
+
+

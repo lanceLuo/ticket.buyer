@@ -3,12 +3,13 @@ import os
 import sys
 import hashlib
 from lib.protocol.Http4Pycurl import Http4Pycurl
-from parser.TicketInfoParser import TicketInfoParser
-from parser.ConfirmOrderParser import ConfirmOrderParser
+from parsert.TicketInfoParser import TicketInfoParser
+from parsert.ConfirmOrderParser import ConfirmOrderParser
 import cookielib
 import json
 import re
 import time
+
 
 
 class YongleBuyer:

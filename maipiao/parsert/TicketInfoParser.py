@@ -1,12 +1,12 @@
 # -*- coding: utf-8
-
 from HTMLParser import HTMLParser
 
 
 class TicketInfoParser(HTMLParser):
+    tickets = []
+
     def __init__(self):
         HTMLParser.__init__(self)
-        self.tickets = []
 
     def handle_starttag(self, tag, attrs):
         def _attr(attrlist, attrname):
@@ -23,4 +23,3 @@ class TicketInfoParser(HTMLParser):
                 'over': True if css_cls and isinstance(css_cls, str) and 'over' in css_cls else False
             }
             self.tickets.append(ticket)
-

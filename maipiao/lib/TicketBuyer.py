@@ -7,6 +7,7 @@ import cookielib
 import time
 from common.Settings import *
 
+
 class TicketBuyer:
 
     def __init__(self, login_name, password, phone):

@@ -10,10 +10,12 @@ from util.NewGrid import *
 import util.Config as Config
 
 def getLocalIp() :
-    obj  = downHtml()
-    data = obj.curl("http://1111.ip138.com/ic.asp")
-    data = obj.iconv('gb2312','utf-8',data)
-    ip   = re.search('\d+\.\d+\.\d+\.\d+', data).group(0)
+    html  = downHtml()
+    res = html.curl("http://ip.chinaz.com/getip.aspx")
+    if not res :
+    	return '0.0.0.0';
+    res = html.iconv('gb2312','utf-8',res)
+    ip   = re.search('\d+\.\d+\.\d+\.\d+', res).group(0)
     return ip
 
 
@@ -210,13 +212,6 @@ class MyApp(wx.App):
 		self.frame.SetFocus()
 		return True
 
-class Ac(object):
-	def showtest():
-		pass
-
-a = Ac()
-print type(Ac);
 if __name__=='__main__':
-	pass
-	# app = MyApp()
-	# app.MainLoop()
+		app = MyApp()
+		app.MainLoop()

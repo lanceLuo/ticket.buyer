@@ -5,8 +5,10 @@ import os
 import sys
 from lib.TicketBuyer import TicketBuyer
 from lib.YongleBuyer import YongleBuyer
+from lib.BuyerGrid import *
 import csv
 import time
+
 
 class MainFrame(wx.Frame):
 
@@ -14,17 +16,20 @@ class MainFrame(wx.Frame):
 
     def __init__(self, parent):
         self.title = u"购票助手"
-        wx.Frame.__init__(self, parent, -1, self.title, size=(800, 600))
-
+        wx.Frame.__init__(self, parent, -1, self.title, size=(900, 600))
+        # 设置背景颜色
+        self.SetBackgroundColour(wx.Colour(236, 233, 216))
         self.create_menu_bar()
         # 设置软件ICON
         self.SetIcon(wx.Icon(os.path.dirname(sys.argv[0]) + '/res/title.ico', wx.BITMAP_TYPE_ICO))
-        # 设置背景颜色
-        # self.SetBackgroundColour(wx.Colour(236, 233, 216))
-        ticket_url = 'http://www.228.com.cn/ticket-234938278.html'
-        ticket_url = 'http://www.228.com.cn/ticket-213495681.html'
-        # s = YongleBuyer('13040866253', 'Qaz123456', 13040866253)
-        # s.buy(ticket_url)
+        self.ui_grid = SimpleGrid(self)
+        # 开始购票按钮
+        self.btn_on_buy = wx.Button(self, wx.ID_ANY, u"开始购票", (660, 310), (80, 30), 0)
+        self.btn_on_buy.Bind(wx.EVT_BUTTON, self.on_buy)
+        # 暂停购票按钮
+        self.btn_off_buy = wx.Button(self, wx.ID_ANY, u"暂停购票", (760, 310), (80, 30), 0)
+        self.btn_off_buy.Bind(wx.EVT_BUTTON, self.off_buy)
+
     '''
     菜单数据
     '''
@@ -78,20 +83,24 @@ class MainFrame(wx.Frame):
     开始购票按钮
     '''
     def on_buy(self, event):
-        print u"开始购票"
+        if not self.buyer_pool:
+            print u"未导入购票人信息"
+            return
+
+        print u"开始抢票了"
         item = self.buyer_pool.pop()
         s = YongleBuyer(item[0], item[1], 13040866253)
         s.buy(item[4])
-        time.sleep(2)
+        time.sleep(15)
         s = YongleBuyer(item[0], item[1], 13040866253)
         s.buy(item[4])
-        print u"购票完毕"
+        print u"购票结束了"
 
     '''
     暂停购票按钮
     '''
     def off_buy(self, event):
-        print u"停止购票"
+        print u"停止抢票了"
 
     '''
     打开开文件对话框
@@ -118,7 +127,7 @@ class MainFrame(wx.Frame):
                 f.close()
                 self.buyer_pool.pop(0)
             except :
-                wx.MessageBox("%s is not a paint file."
+                wx.MessageBox(u"%s 文件格式错误"
                               % self.filename, "error tip",
                               style=wx.OK | wx.ICON_EXCLAMATION)
 

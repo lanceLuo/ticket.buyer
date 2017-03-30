@@ -3,11 +3,12 @@ import os
 import sys
 import hashlib
 from lib.protocol.Http4Pycurl import Http4Pycurl
-from parsert.TicketInfoParser import TicketInfoParser
-from parsert.ConfirmOrderParser import ConfirmOrderParser
+from parser.TicketInfoParser import TicketInfoParser
+from parser.ConfirmOrderParser import ConfirmOrderParser
 import cookielib
 import json
 import re
+import time
 
 
 class YongleBuyer:
@@ -124,12 +125,14 @@ class YongleBuyer:
             post_url = confirm_parser.form_post_url
             post_data = confirm_parser.form_post_dict
             order_source_val = confirm_parser.order_source_val
+            address_ids = confirm_parser.address_id_list
             if order_source_val:
                 post_data["o['orderSource']"] = order_source_val
             post_data["o['payid']"] = '2217200'  # 使用支付宝支付
             post_data['discountdetailid'] = '2217200'
             post_data['activeNo'] = -1
-            post_data["o['addressid']"] = '11357794'  # 配送地址ID
+            if address_ids:
+                post_data["o['addressid']"] = address_ids[0]['addressid']  # 配送地址ID
             # [{"cityid":1,"tickets":"234938479^1","shipment":1,"insurance":0,"cashno":"0","renewal":"0.00"}]
             purchases = [
                 {

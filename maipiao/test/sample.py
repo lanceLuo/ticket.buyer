@@ -25,12 +25,7 @@
 #
 # print compose_debug_url('http://www.example.com/content/page?name=john&age=35')
 # print compose_debug_url('http://www.example.com/')
-import re
-name = "o['aaa']"
-a = {}
-s = re.findall(r".+\['(.+)'\]", name)
-k = re.findall(r"(.+)\[", name)
-print k[0]
-print s[0]
-a[k[0]] = s[0]
+a = [1,2,3]
+t = a.pop(0)
+print t
 print a

@@ -2,6 +2,8 @@
 import pycurl
 import StringIO
 import urllib
+import time
+
 
 class Http4Pycurl:
 
@@ -71,7 +73,8 @@ class Http4Pycurl:
     GET请求
     '''
     def get(self, url, retries=1):
-        return self.curl(url, 'GET', None, retries)
+        r = self.curl(url, 'GET', None, retries)
+        return r
 
     def set_header(self):
         pass

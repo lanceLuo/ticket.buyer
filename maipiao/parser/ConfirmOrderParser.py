@@ -11,6 +11,8 @@ class ConfirmOrderParser(HTMLParser):
         self.form_post_url = None
         self.form_post_dict = {}
         self.order_source_val = None
+        self.address_id_list = []
+        self.in_address_tag = False
 
     def handle_starttag(self, tag, attrs):
         def _attr(attrlist, attrname):
@@ -27,9 +29,15 @@ class ConfirmOrderParser(HTMLParser):
             self.form_post_dict[name] = value
         elif tag == 'input' and _attr(attrs, 'id') == 'orderSourceVal':
             self.order_source_val = _attr(attrs, 'value')
+        elif tag == 'ul' and _attr(attrs, 'id') == 'cusAddress':
+            self.in_address_tag = True
+        elif tag == 'li' and _attr(attrs, 'aid'):
+            self.address_id_list.append({'addressid': _attr(attrs, 'aid')})
         else:
             pass
 
     def handle_endtag(self, tag):
         if tag == 'form' and self.in_form:
             self.in_form = False
+        elif tag == 'ul' and self.in_address_tag:
+            self.in_address_tag = False

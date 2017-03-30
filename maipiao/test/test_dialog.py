@@ -285,7 +285,7 @@ class PaintFrame(wx.Frame):
             except cPickle.UnpicklingError:  
                 wx.MessageBox("%s is not a paint file."  
                               % self.filename, "error tip",  
-                              style = wx.OK | wx.ICON_EXCLAMATION)  
+                              style=wx.OK | wx.ICON_EXCLAMATION)
        
   
               

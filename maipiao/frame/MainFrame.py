@@ -10,6 +10,21 @@ import csv
 import time
 
 
+class MyPage(wx.NotebookPage):
+    def __init__(self, parent, Name):
+        wx.NotebookPage.__init__(self, parent, -1)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.Box = wx.TextCtrl(self, wx.ID_ANY, u"", wx.DefaultPosition, (0, 0),
+                               wx.TE_PROCESS_TAB | wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_PROCESS_ENTER | wx.TE_RICH | wx.NO_BORDER)
+        self.Box.SetMaxLength(0)
+        self.Box.SetName(Name)
+        self.Box.SetFont(wx.Font(10, 70, 90, 90, False, wx.EmptyString))
+        sizer.Add(self.Box, 0, wx.ALL, 0)
+        self.SetSizer(sizer)
+
+        self.Fit()
+
+
 class MainFrame(wx.Frame):
 
     buyer_pool = []
@@ -24,12 +39,19 @@ class MainFrame(wx.Frame):
         self.SetIcon(wx.Icon(os.path.dirname(sys.argv[0]) + '/res/title.ico', wx.BITMAP_TYPE_ICO))
         self.ui_grid = SimpleGrid(self)
         # 开始购票按钮
-        self.btn_on_buy = wx.Button(self, wx.ID_ANY, u"开始购票", (660, 310), (80, 30), 0)
+        self.btn_on_buy = wx.Button(self, wx.ID_ANY, u"开始购票", (660, 320), (80, 30), 0)
         self.btn_on_buy.Bind(wx.EVT_BUTTON, self.on_buy)
         # 暂停购票按钮
-        self.btn_off_buy = wx.Button(self, wx.ID_ANY, u"暂停购票", (760, 310), (80, 30), 0)
+        self.btn_off_buy = wx.Button(self, wx.ID_ANY, u"暂停购票", (760, 320), (80, 30), 0)
         self.btn_off_buy.Bind(wx.EVT_BUTTON, self.off_buy)
+        # 错误信息面板
+        self.notebook = wx.Notebook(self, wx.ID_ANY, (2, 300), (650, 240), 0 | wx.NO_BORDER)
+        self.notebook.SetBackgroundColour(wx.Colour(236, 233, 216))
 
+        self.notebook_jindu = MyPage(self.notebook, 'jindu')
+        self.notebook_err = MyPage(self.notebook, 'err')
+        self.notebook.AddPage(self.notebook_jindu, u"  提示信息  ")
+        self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
     '''
     菜单数据
     '''

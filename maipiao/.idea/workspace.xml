@@ -11,7 +11,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/maipiao$TicketBuyer.coverage" NAME="TicketBuyer Coverage Results" MODIFIED="1490248099384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/lib" />
-    <SUITE FILE_PATH="coverage/maipiao$TicketApp.coverage" NAME="TicketApp Coverage Results" MODIFIED="1490954263157" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/maipiao$TicketApp.coverage" NAME="TicketApp Coverage Results" MODIFIED="1490954725714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/maipiao$test_dialog.coverage" NAME="test_dialog Coverage Results" MODIFIED="1490848345306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/maipiao$App.coverage" NAME="App Coverage Results" MODIFIED="1490170016403" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../registration_robot" />
     <SUITE FILE_PATH="coverage/maipiao$test_html_parser.coverage" NAME="test_html_parser Coverage Results" MODIFIED="1490603622895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
@@ -40,8 +40,8 @@
       <file leaf-file-name="YongleBuyer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/YongleBuyer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2800">
-              <caret line="187" column="73" lean-forward="true" selection-start-line="187" selection-start-column="73" selection-end-line="187" selection-end-column="73" />
+            <state relative-caret-position="-1825">
+              <caret line="92" column="16" lean-forward="true" selection-start-line="92" selection-start-column="16" selection-end-line="92" selection-end-column="16" />
               <folding>
                 <element signature="e#25#34#0" expanded="true" />
               </folding>
@@ -1120,8 +1120,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/YongleBuyer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2800">
-          <caret line="187" column="73" lean-forward="true" selection-start-line="187" selection-start-column="73" selection-end-line="187" selection-end-column="73" />
+        <state relative-caret-position="-1825">
+          <caret line="92" column="16" lean-forward="true" selection-start-line="92" selection-start-column="16" selection-end-line="92" selection-end-column="16" />
           <folding>
             <element signature="e#25#34#0" expanded="true" />
           </folding>

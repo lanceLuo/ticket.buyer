@@ -4,6 +4,8 @@ from HTMLParser import HTMLParser
 
 class TicketInfoParser(HTMLParser):
     tickets = []
+    title = ''
+    in_title = False
 
     def __init__(self):
         HTMLParser.__init__(self)
@@ -23,3 +25,13 @@ class TicketInfoParser(HTMLParser):
                 'over': True if css_cls and isinstance(css_cls, str) and 'over' in css_cls else False
             }
             self.tickets.append(ticket)
+        elif tag == 'title':
+            self.in_title = True
+
+    def handle_data(self, data):
+        if self.in_title:
+            self.title = data
+
+    def handle_endtag(self, tag):
+        if tag == 'title':
+            self.in_title = False

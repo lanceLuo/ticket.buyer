@@ -8,6 +8,8 @@ from lib.YongleBuyer import YongleBuyer
 from lib.BuyerGrid import *
 import csv
 import time
+import Queue
+import threading
 
 
 class MyPage(wx.NotebookPage):
@@ -21,17 +23,43 @@ class MyPage(wx.NotebookPage):
         self.Box.SetFont(wx.Font(10, 70, 90, 90, False, wx.EmptyString))
         sizer.Add(self.Box, 0, wx.ALL, 0)
         self.SetSizer(sizer)
-
         self.Fit()
 
 
-class MainFrame(wx.Frame):
+class LogOut:
+    def __init__(self, obj):
+        self.obj = obj
+        self.N = len(self.obj.Box.GetValue())
+        self.name = obj.Box.Name
+        self.stdout = Queue.Queue()
 
-    buyer_pool = []
+    def write(self, s):
+        self.stdout.put(s)
+
+    def output(self):
+        while 1:
+            if self.stdout.empty():
+                time.sleep(1)
+                continue
+            s = self.stdout.get()
+            if self.N > 40960:
+                self.N = 0
+                self.obj.Box.Clear()
+            self.obj.Box.AppendText(s)
+            self.N += len(s) + 2
+            self.obj.Box.SetSelection(self.N, self.N)
+
+
+class MainFrame(wx.Frame):
+    log_thread = []
+    th_buyer = []  # 线程数
+    buyer_num = 2
+    filename = None
 
     def __init__(self, parent):
         self.title = u"购票助手"
-        wx.Frame.__init__(self, parent, -1, self.title, size=(900, 600))
+        self.ticket_queue = Queue.Queue()
+        wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(900, 600))
         # 设置背景颜色
         self.SetBackgroundColour(wx.Colour(236, 233, 216))
         self.create_menu_bar()
@@ -48,10 +76,23 @@ class MainFrame(wx.Frame):
         self.notebook = wx.Notebook(self, wx.ID_ANY, (2, 300), (650, 240), 0 | wx.NO_BORDER)
         self.notebook.SetBackgroundColour(wx.Colour(236, 233, 216))
 
-        self.notebook_jindu = MyPage(self.notebook, 'jindu')
+        self.notebook_tip = MyPage(self.notebook, 'tip')
+        self.notebook.AddPage(self.notebook_tip, u"  提示信息  ")
+        self.tip_log = LogOut(self.notebook_tip)
+        sys.stdout = self.tip_log
         self.notebook_err = MyPage(self.notebook, 'err')
-        self.notebook.AddPage(self.notebook_jindu, u"  提示信息  ")
         self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
+        self.err_log = LogOut(self.notebook_err)
+        # sys.stderr = self.err_log
+        for i in range(2):
+            if i == 0:
+                t = threading.Thread(target=self.tip_log.output, name="S_" + str(i))
+            else:
+                t = threading.Thread(target=self.err_log.output, name="S_" + str(i))
+            t.setDaemon(1)
+            t.start()
+            self.log_thread.append(t)
+
     '''
     菜单数据
     '''
@@ -89,7 +130,7 @@ class MainFrame(wx.Frame):
             if len(each_item) == 2:
                 label = each_item[0]
                 sub_menu = self.create_menu(each_item[1])
-                menu.AppendMenu(wx.NewId(), label, sub_menu) #递归创建菜单项
+                menu.AppendMenu(wx.NewId(), label, sub_menu)  # 递归创建菜单项
             else:
                 self.create_menu_item(menu, *each_item)
         return menu
@@ -105,23 +146,51 @@ class MainFrame(wx.Frame):
     开始购票按钮
     '''
     def on_buy(self, event):
-        if not self.buyer_pool:
+        if self.ticket_queue.empty():
             print u"未导入购票人信息"
             return
 
-        print u"开始抢票了"
-        item = self.buyer_pool.pop()
-        s = YongleBuyer(item[0], item[1], 13040866253)
-        s.buy(item[4])
-        time.sleep(15)
-        s = YongleBuyer(item[0], item[1], 13040866253)
-        s.buy(item[4])
-        print u"购票结束了"
+        def th_buyer():
+            while 1:
+                if self.ticket_queue.empty():
+                    break
+                try:
+                    item = self.ticket_queue.get()
+                except ValueError, e:
+                    item = None
+                if not item:
+                    continue
+                s = YongleBuyer(login_name=item[0], password=item[1], card_name=item[2], card_no=item[3])
+                s.buy(item[5])
+
+        print u"抢票开始..."
+        self.btn_on_buy.Disable()
+        for i in range(self.buyer_num):
+            t = threading.Thread(target=th_buyer, name="BUYER_" + str(i))
+            t.setDaemon(1)
+            t.start()
+            self.th_buyer.append(t)
+
+        def chk_btn():
+            while 1:
+                num = 0
+                for b in self.th_buyer:
+                    if not b.isAlive():
+                        num += 1
+                if num == self.buyer_num:
+                    self.th_buyer = []
+                    self.btn_on_buy.Enable()
+                    break
+                time.sleep(1)
+        self.th_chk_btn = threading.Thread(target=chk_btn, name="T_CHK_BTN")
+        self.th_chk_btn.setDaemon(1)
+        self.th_chk_btn.start()
 
     '''
     暂停购票按钮
     '''
     def off_buy(self, event):
+        self.btn_on_buy.Enable()
         print u"停止抢票了"
 
     '''
@@ -145,16 +214,16 @@ class MainFrame(wx.Frame):
                 f = open(self.filename)
                 csv_reader = csv.reader(f)
                 for row in csv_reader:
-                    self.buyer_pool.append(row)
+                    self.ticket_queue.put(row)
                 f.close()
-                self.buyer_pool.pop(0)
+                self.ticket_queue.get()
             except :
                 wx.MessageBox(u"%s 文件格式错误"
                               % self.filename, "error tip",
                               style=wx.OK | wx.ICON_EXCLAMATION)
 
     def on_view(self, event):
-        print self.buyer_pool
+        pass
 
     def on_close_window(self, event):
         self.Destroy()

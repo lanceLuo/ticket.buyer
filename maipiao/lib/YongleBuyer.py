@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import os
 import sys
 import hashlib
@@ -11,18 +12,21 @@ import re
 import time
 
 
-
 class YongleBuyer:
 
-    def __init__(self, login_name, password, phone):
+    def __init__(self, **kwargs):
         self.login_url = 'http://www.228.com.cn/auth/login'
         self.user_info_url = 'http://www.228.com.cn/ajax/getUserInfoFact'
         self.confirm_url = 'http://www.228.com.cn/cart/toOrderSure.html?pid={}&sd={}&quickBuyType=-1'
-        self.login_name = str(login_name)
-        self.password = str(password)
-        self.phone = phone
+        self.login_name = str(kwargs['login_name'])
+        self.password = str(kwargs['password'])
+        self.card_type = '10'
+        self.card_no = kwargs.get('card_no', None)  # 身份证号码
+        self.card_name = kwargs.get('card_name', None)  # 身份证姓名
         self.cookie = self.get_cookie_file_path()
         self.user_info = None
+        if not isinstance(self.card_name, unicode):
+            self.card_name = self.card_name.decode('gb2312')
 
     '''
     '''
@@ -32,11 +36,20 @@ class YongleBuyer:
             json_str = curl.get(self.user_info_url)
             user_info = json.loads(json_str)
             if not user_info['status']:
-                print "login"
+                print u"帐号{}开始登录...".format(self.login_name)
                 self.__init_login()
                 json_str = curl.get(self.user_info_url)
-                user_info = json.loads(json_str)
-            print user_info
+                try:
+                    user_info = json.loads(json_str)
+                except:
+                    user_info = {"status": False}
+                if not user_info["status"]:
+                    print u"帐号{}登录失败!".format(self.login_name)
+                else:
+                    print u"帐号{}登录成功!".format(self.login_name)
+            else:
+                print u"帐号{}登录成功!".format(self.login_name)
+
             self.user_info = user_info
 
         worker = Http4Pycurl(self.cookie, reffer)
@@ -101,14 +114,21 @@ class YongleBuyer:
         ticket_parser = TicketInfoParser()
         ticket_parser.feed(html)
         ticket_parser.close()
-        return ticket_parser.tickets
+        info = {
+            'tickets': ticket_parser.tickets,
+            'title': ticket_parser.title
+        }
+        return info
 
     '''
+    购票
     '''
     def buy(self, ticket_url, is_self_take=False):
         # http://www.228.com.cn/ticket-234938278.html
         productid = re.findall(r'ticket-(.+)\.html', ticket_url)[0]
-        tickets = self.ticket_info_page(ticket_url)
+        info = self.ticket_info_page(ticket_url)
+        tickets = info.get('tickets', None)
+        title = info.get('title', None)
         sd = s1 = s2 = ''
         if tickets and isinstance(tickets, list):
             for each in tickets:
@@ -117,7 +137,13 @@ class YongleBuyer:
                 s1 = '{}{},'.format(s1, each['ticketid'])
                 s2 += '1,'
                 break
-            sd = s1[0:-1] + '^' + s2[0:-1]
+            if s1:
+                sd = s1[0:-1] + '^' + s2[0:-1]
+
+        if not sd:
+            print u"票已抢完 -- {}".format(title)
+            return
+
         confirm_url = self.confirm_url.format(productid, sd)
         confirm_html = self.http_worker(ticket_url).get(confirm_url)
         if confirm_html:
@@ -127,6 +153,9 @@ class YongleBuyer:
             post_data = confirm_parser.form_post_dict
             order_source_val = confirm_parser.order_source_val
             address_ids = confirm_parser.address_id_list
+            if not post_data.get("o['tickets']", None):
+                print u"订单确认失败"
+                return
             if order_source_val:
                 post_data["o['orderSource']"] = order_source_val
             post_data["o['payid']"] = '2217200'  # 使用支付宝支付
@@ -137,7 +166,7 @@ class YongleBuyer:
             # [{"cityid":1,"tickets":"234938479^1","shipment":1,"insurance":0,"cashno":"0","renewal":"0.00"}]
             purchases = [
                 {
-                    "tickets": post_data["o['tickets']"],#购买信息
+                    "tickets": post_data["o['tickets']"],  # 购买信息
                     "insurance": "0",  # 不购买保险
                     "cashno": "0",
                     "cityid": 1,
@@ -145,8 +174,15 @@ class YongleBuyer:
                     "renewal": "0.00"
                 }
             ]
+
+            if True:  # 实名认证
+                cardnos = u"10:{}:{};".format(self.card_no, self.card_name)
+                purchases[0]['idcardverified'] = [
+                    {
+                        "tickets": post_data["o['tickets']"],
+                        "cardnos": cardnos
+                     }
+                ]
+
             post_data["o['purchases']"] = json.dumps(purchases)
-            # print post_url
-            # print post_data
             res = self.http_worker(confirm_url).post(post_url, post_data)
-            print res

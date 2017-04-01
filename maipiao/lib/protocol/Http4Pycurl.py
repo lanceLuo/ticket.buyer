@@ -20,6 +20,7 @@ class Http4Pycurl:
         try:
             c = pycurl.Curl()
         except pycurl.error, e:
+            pycurl.error.message()
             return False
 
         io_buf = StringIO.StringIO()

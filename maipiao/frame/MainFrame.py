@@ -79,7 +79,7 @@ class MainFrame(wx.Frame):
         self.notebook_tip = MyPage(self.notebook, 'tip')
         self.notebook.AddPage(self.notebook_tip, u"  提示信息  ")
         self.tip_log = LogOut(self.notebook_tip)
-        sys.stdout = self.tip_log
+        # sys.stdout = self.tip_log
         self.notebook_err = MyPage(self.notebook, 'err')
         self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
         self.err_log = LogOut(self.notebook_err)

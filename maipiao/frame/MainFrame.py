@@ -10,7 +10,7 @@ import csv
 import time
 import Queue
 import threading
-
+import datetime
 
 class MyPage(wx.NotebookPage):
     def __init__(self, parent, Name):
@@ -46,6 +46,17 @@ class LogOut:
                 self.N = 0
                 self.obj.Box.Clear()
             self.obj.Box.AppendText(s)
+            cdate = datetime.datetime.now().strftime('%d-%m-%y')
+            dirname = os.path.dirname(sys.argv[0]) + "/data/log"
+            if threading.current_thread().getName() == "S_0":
+                filename = dirname + "/info_" + cdate + ".log"
+            else:
+                filename = dirname + "/err_" + cdate + ".log"
+            if not os.path.exists(dirname):
+                os.mkdir(dirname)
+            fp = open(filename, 'a+')
+            fp.write(s + "\r")
+            fp.close()
             self.N += len(s) + 2
             self.obj.Box.SetSelection(self.N, self.N)
 
@@ -60,6 +71,9 @@ class MainFrame(wx.Frame):
         self.title = u"购票助手"
         self.ticket_queue = Queue.Queue()
         wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(900, 600))
+        self.SetMaxSize((900, 600))
+        self.SetMinSize((900, 600))
+
         # 设置背景颜色
         self.SetBackgroundColour(wx.Colour(236, 233, 216))
         self.create_menu_bar()
@@ -79,7 +93,7 @@ class MainFrame(wx.Frame):
         self.notebook_tip = MyPage(self.notebook, 'tip')
         self.notebook.AddPage(self.notebook_tip, u"  提示信息  ")
         self.tip_log = LogOut(self.notebook_tip)
-        # sys.stdout = self.tip_log
+        sys.stdout = self.tip_log
         self.notebook_err = MyPage(self.notebook, 'err')
         self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
         self.err_log = LogOut(self.notebook_err)
@@ -190,6 +204,8 @@ class MainFrame(wx.Frame):
     暂停购票按钮
     '''
     def off_buy(self, event):
+        self.ui_grid.add_one_empty_row()
+        print self.ui_grid.GetNumberRows()
         self.btn_on_buy.Enable()
         print u"停止抢票了"
 
@@ -213,10 +229,14 @@ class MainFrame(wx.Frame):
             try:
                 f = open(self.filename)
                 csv_reader = csv.reader(f)
+                i = 0
                 for row in csv_reader:
+                    i += 1
+                    if i == 1:
+                        continue
                     self.ticket_queue.put(row)
+                    self.ui_grid.add_one_row_data(name=row[0], state=u'待购票', price='0.00', pay_time_left='', info=row[5])
                 f.close()
-                self.ticket_queue.get()
             except :
                 wx.MessageBox(u"%s 文件格式错误"
                               % self.filename, "error tip",

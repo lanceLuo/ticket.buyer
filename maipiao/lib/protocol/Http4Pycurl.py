@@ -3,6 +3,8 @@ import pycurl
 import StringIO
 import urllib
 import time
+import os
+import sys
 
 
 class Http4Pycurl:
@@ -29,20 +31,14 @@ class Http4Pycurl:
         c.setopt(pycurl.FOLLOWLOCATION, 1)
         c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.setopt(pycurl.SSL_VERIFYHOST, 0)
+        c.setopt(pycurl.CONNECTTIMEOUT, 1)
+        c.setopt(pycurl.TIMEOUT, 1)
         c.setopt(pycurl.ENCODING, "gzip,deflate,sdch")
         c.setopt(pycurl.USERAGENT, self.__user_agent)
         if self.__refferer:
             c.setopt(pycurl.REFERER, self.__refferer)
 
         if method == 'POST':
-            # fields = ''
-            # if not data:
-            #     links = url.split('?',1)
-            #     if len(links) == 2:
-            #         fields = links[1]
-            # if isinstance(data, dict):
-            #     for k in data:
-            #         fields = fields + (k + "=" + str(data[k]) + "&")
             c.setopt(pycurl.POST, True)
             c.setopt(pycurl.POSTFIELDS, urllib.urlencode(data))
 
@@ -56,6 +52,15 @@ class Http4Pycurl:
         try:
             http_code = c.getinfo(c.HTTP_CODE)
             content_type = c.getinfo(c.CONTENT_TYPE)
+            total_time = c.getinfo(pycurl.TOTAL_TIME)
+            if method == 'GET':
+                msg = "[URL] {} | [CODE] {} | [TOTAL_TIME] {} | GET".format(url, str(http_code), str(total_time))
+            else:
+                msg = "[URL] {} | [CODE] {} | [TOTAL_TIME] {} | [PARAMS] {} | POST"\
+                    .format(url, str(http_code),str(total_time), urllib.urlencode(data))
+
+            self.write_log(msg)
+
             value = io_buf.getvalue()
             c.close()
             if http_code >= 400:
@@ -64,7 +69,7 @@ class Http4Pycurl:
             return value
         except pycurl.error, e:
             http_code = c.getinfo(c.HTTP_CODE)
-
+            print http_code
             try:
                 c.close()
             except:
@@ -86,9 +91,13 @@ class Http4Pycurl:
     def post(self, url, data, retries=1):
         return self.curl(url, 'POST', data, retries)
 
+    def write_log(self, msg):
+        fp = open(os.path.dirname(sys.argv[0]) + "/data/log/http.log", "a+")
+        fp.write(msg + "\r\n")
+        fp.close()
+
 if __name__ == '__main__':
     handler = Http4Pycurl()
-    handler.set_cookie_path("D:/registration_robot/cookie.txt")
     url = "http://shopping.damai.cn/order.aspx?_action=Immediately&info=%2bb0inMKF1n2S9vl%2ffq9I1agfYzebN35Q"
-    print handler.get(url)
-    # print handler.get("http://ip.chinaz.com/getip.aspx")
+    html = handler.get("http://www.baidu1.com/")
+    print  html

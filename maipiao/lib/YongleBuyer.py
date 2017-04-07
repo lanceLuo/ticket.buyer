@@ -41,14 +41,6 @@ class YongleBuyer:
             if is_login != 'true':  # 未登录
                 print u"帐号{}开始登录...".format(self.login_name)
                 self.__init_login()
-                # curl = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
-                # is_login = curl.get(self.check_login_url)
-                # if is_login != 'true':  # 未登录
-                #     self.is_login = False
-                #     print u"帐号{}登录失败!".format(self.login_name)
-                # else:
-                #     self.is_login = True
-                #     print u"帐号{}登录成功!".format(self.login_name)
             else:
                 self.is_login = True
                 print u"帐号{}已登录过!".format(self.login_name)
@@ -125,11 +117,11 @@ class YongleBuyer:
     购票
     '''
     def buy(self, ticket_url, is_self_take=False):
-        self.http_worker()
-        return
         # http://www.228.com.cn/ticket-234938278.html
         productid = re.findall(r'ticket-(.+)\.html', ticket_url)[0]
         info = self.ticket_info_page(ticket_url)
+        print info
+        return
         tickets = info.get('tickets', None)
         title = info.get('title', None)
         sd = s1 = s2 = ''

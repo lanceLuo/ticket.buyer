@@ -2,26 +2,28 @@
 import wx
 import wx.grid as gridlib
 
+
 class SimpleGrid(gridlib.Grid):
+    data_row = 0
 
     def __init__(self, parent):
 
         gridlib.Grid.__init__(self, parent, -1, size=(880,290))
 
         self.moveTo = None
-
         self.Bind(wx.EVT_IDLE, self.OnIdle)
 
-        self.CreateGrid(25, 5)
+        self.CreateGrid(5, 5)
+        self.set_read_only()
         # simple cell formatting
         self.SetColSize(0, 150)
         self.SetColSize(1, 100)
-        self.SetColSize(2, 150)
-        self.SetColSize(3, 150)
-        self.SetColSize(4, 230)
+        self.SetColSize(2, 100)
+        self.SetColSize(3, 100)
+        self.SetColSize(4, 330)
 
         self.SetColLabelValue(0, u"帐号")
-        self.SetColLabelValue(1, u"状态")
+        self.SetColLabelValue(1, u"购票状态")
         self.SetColLabelValue(2, u"价格区间")
         self.SetColLabelValue(3, u"剩余支付时间")
         self.SetColLabelValue(4, u"购票信息")
@@ -50,43 +52,33 @@ class SimpleGrid(gridlib.Grid):
 
 
     def OnCellLeftClick(self, evt):
-        print "OnCellLeftClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnCellRightClick(self, evt):
-        print "OnCellRightClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnCellLeftDClick(self, evt):
-        print "OnCellLeftDClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnCellRightDClick(self, evt):
-        print "OnCellRightDClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnLabelLeftClick(self, evt):
-        print "OnLabelLeftClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnLabelRightClick(self, evt):
-        print "OnLabelRightClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnLabelLeftDClick(self, evt):
-        print "OnLabelLeftDClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnLabelRightDClick(self, evt):
-        print "OnLabelRightDClick: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
     def OnRowSize(self, evt):
-        print "OnRowSize: row %d, %s\n" % (evt.GetRowOrCol(), evt.GetPosition())
         evt.Skip()
 
     def OnColSize(self, evt):
-        print "OnColSize: col %d, %s\n" % (evt.GetRowOrCol(), evt.GetPosition())
         evt.Skip()
 
     def OnRangeSelect(self, evt):
@@ -94,13 +86,10 @@ class SimpleGrid(gridlib.Grid):
             msg = 'Selected'
         else:
             msg = 'Deselected'
-        print "OnRangeSelect: %s  top-left %s, bottom-right %s\n" % (msg, evt.GetTopLeftCoords(),
-                                                                     evt.GetBottomRightCoords())
         evt.Skip()
 
 
     def OnCellChange(self, evt):
-        print "OnCellChange: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
 
         # Show how to stay in a cell that has bad data.  We can't just
         # call SetGridCursor here since we are nested inside one so it
@@ -126,8 +115,6 @@ class SimpleGrid(gridlib.Grid):
         else:
             msg = 'Deselected'
 
-        print "OnSelectCell: %s (%d,%d) %s\n" % (msg, evt.GetRow(), evt.GetCol(), evt.GetPosition())
-
         # Another way to stay in a cell that has a bad value...
         row = self.GetGridCursorRow()
         col = self.GetGridCursorCol()
@@ -151,7 +138,6 @@ class SimpleGrid(gridlib.Grid):
             evt.Veto()
             return
 
-        print "OnEditorShown: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
 
@@ -162,13 +148,30 @@ class SimpleGrid(gridlib.Grid):
             evt.Veto()
             return
 
-        print "OnEditorHidden: (%d,%d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetPosition())
         evt.Skip()
 
 
     def OnEditorCreated(self, evt):
-        print "OnEditorCreated: (%d, %d) %s\n" % (evt.GetRow(), evt.GetCol(), evt.GetControl())
+        pass
 
+    def add_one_row_data(self, **kwargs):
+        self.SetCellValue(row=self.data_row, col=0, s=kwargs['name'])  # 账号
+        self.SetCellValue(row=self.data_row, col=1, s=kwargs['state'])  # 购票状态
+        self.SetCellValue(row=self.data_row, col=2, s=kwargs['price'])  # 价格区间
+        self.SetCellValue(row=self.data_row, col=3, s=kwargs['pay_time_left'])  # 剩余支付时间
+        self.SetCellValue(row=self.data_row, col=4, s=kwargs['info'])  # 购票信息
+        self.data_row += 1
+        row_num = self.GetNumberRows()
+        if self.data_row == row_num:
+            self.AppendRows(5)
+            self.set_read_only()
 
-if __name__=='__main__':
-	pass
+    def set_read_only(self):
+        for i in range(0, self.GetNumberRows()):
+            for k in range(0, self.GetNumberCols()):
+                if k == 2:
+                    continue
+                self.SetReadOnly(row=i, col=k, isReadOnly=True)
+
+if __name__ == '__main__':
+    pass

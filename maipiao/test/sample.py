@@ -1,6 +1,6 @@
 # -*- coding:utf-8
 import sys
-
+import Queue
 
 class Color(object):
     _color = (0, 0, 0);
@@ -28,12 +28,21 @@ class UnknownColor(Color):
     pass
 
 
-red = Red()
-green = Green()
-xcolor = UnknownColor()
+# red = Red()
+# green = Green()
+# xcolor = UnknownColor()
+#
+# print 'red = ', Red.value()
+# print 'green = ', Green.value()
+# print 'xcolor =', UnknownColor.value()
 
-print 'red = ', Red.value()
-print 'green = ', Green.value()
-print 'xcolor =', UnknownColor.value()
+class A:
+    a = {}
+    def __init__(self):
+        self.a = {}
 
+a1 = A()
+a2 = a1.a
+a2["c"] = 1
+print a1.a
 

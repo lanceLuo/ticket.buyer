@@ -6,59 +6,14 @@ import sys
 from lib.TicketBuyer import TicketBuyer
 from lib.YongleBuyer import YongleBuyer
 from lib.BuyerGrid import *
+from lib.MyPage import MyPage
+from lib.LogOut import LogOut
 import csv
 import time
 import Queue
 import threading
 import datetime
-
-class MyPage(wx.NotebookPage):
-    def __init__(self, parent, Name):
-        wx.NotebookPage.__init__(self, parent, -1)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.Box = wx.TextCtrl(self, wx.ID_ANY, u"", wx.DefaultPosition, (0, 0),
-                               wx.TE_PROCESS_TAB | wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_PROCESS_ENTER | wx.TE_RICH | wx.NO_BORDER)
-        self.Box.SetMaxLength(0)
-        self.Box.SetName(Name)
-        self.Box.SetFont(wx.Font(10, 70, 90, 90, False, wx.EmptyString))
-        sizer.Add(self.Box, 0, wx.ALL, 0)
-        self.SetSizer(sizer)
-        self.Fit()
-
-
-class LogOut:
-    def __init__(self, obj):
-        self.obj = obj
-        self.N = len(self.obj.Box.GetValue())
-        self.name = obj.Box.Name
-        self.stdout = Queue.Queue()
-
-    def write(self, s):
-        self.stdout.put(s)
-
-    def output(self):
-        while 1:
-            if self.stdout.empty():
-                time.sleep(1)
-                continue
-            s = self.stdout.get()
-            if self.N > 40960:
-                self.N = 0
-                self.obj.Box.Clear()
-            self.obj.Box.AppendText(s)
-            cdate = datetime.datetime.now().strftime('%d-%m-%y')
-            dirname = os.path.dirname(sys.argv[0]) + "/data/log"
-            if threading.current_thread().getName() == "S_0":
-                filename = dirname + "/info_" + cdate + ".log"
-            else:
-                filename = dirname + "/err_" + cdate + ".log"
-            if not os.path.exists(dirname):
-                os.mkdir(dirname)
-            fp = open(filename, 'a+')
-            fp.write(s + "\r")
-            fp.close()
-            self.N += len(s) + 2
-            self.obj.Box.SetSelection(self.N, self.N)
+import re
 
 
 class MainFrame(wx.Frame):
@@ -66,13 +21,16 @@ class MainFrame(wx.Frame):
     th_buyer = []  # 线程数
     buyer_num = 2
     filename = None
+    worker_job_queue = Queue.Queue()
 
     def __init__(self, parent):
         self.title = u"购票助手"
+        self.tickets = []
         self.ticket_queue = Queue.Queue()
-        wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(900, 600))
-        self.SetMaxSize((900, 600))
-        self.SetMinSize((900, 600))
+        self.worker_poll = []
+        wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(960, 600))
+        self.SetMaxSize((960, 600))
+        self.SetMinSize((960, 600))
 
         # 设置背景颜色
         self.SetBackgroundColour(wx.Colour(236, 233, 216))
@@ -93,7 +51,7 @@ class MainFrame(wx.Frame):
         self.notebook_tip = MyPage(self.notebook, 'tip')
         self.notebook.AddPage(self.notebook_tip, u"  提示信息  ")
         self.tip_log = LogOut(self.notebook_tip)
-        sys.stdout = self.tip_log
+        # sys.stdout = self.tip_log
         self.notebook_err = MyPage(self.notebook, 'err')
         self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
         self.err_log = LogOut(self.notebook_err)
@@ -106,6 +64,35 @@ class MainFrame(wx.Frame):
             t.setDaemon(1)
             t.start()
             self.log_thread.append(t)
+        self.init_worker_poll()
+
+    '''
+    初始化线程池
+    '''
+    def init_worker_poll(self):
+        for i in range(0, 10):
+            worker = threading.Thread(target=self.do_worker, name="worker_" + str(i))
+            worker.setDaemon(1)
+            worker.start()
+            self.worker_poll.append(worker)
+
+    '''
+    worker线程处理
+    '''
+    @classmethod
+    def do_worker(cls):
+        while True:
+            if cls.worker_job_queue.qsize() > 0:
+                try:
+                    job = cls.worker_job_queue.get(False)
+                    r = job["target"](job.get("args", None))
+                    job["callback"](r)
+                    time.sleep(0.5)
+                except Queue.Empty:
+                    time.sleep(0.1)
+            else:
+                time.sleep(0.1)
+
 
     '''
     菜单数据
@@ -159,32 +146,7 @@ class MainFrame(wx.Frame):
     '''
     开始购票按钮
     '''
-    def on_buy(self, event):
-        if self.ticket_queue.empty():
-            print u"未导入购票人信息"
-            return
-
-        def th_buyer():
-            while 1:
-                if self.ticket_queue.empty():
-                    break
-                try:
-                    item = self.ticket_queue.get()
-                except ValueError, e:
-                    item = None
-                if not item:
-                    continue
-                s = YongleBuyer(login_name=item[0], password=item[1], card_name=item[2], card_no=item[3])
-                s.buy(item[5])
-
-        print u"抢票开始..."
-        self.btn_on_buy.Disable()
-        for i in range(self.buyer_num):
-            t = threading.Thread(target=th_buyer, name="BUYER_" + str(i))
-            t.setDaemon(1)
-            t.start()
-            self.th_buyer.append(t)
-
+    def on_buy_1(self, event):
         def chk_btn():
             while 1:
                 num = 0
@@ -200,12 +162,42 @@ class MainFrame(wx.Frame):
         self.th_chk_btn.setDaemon(1)
         self.th_chk_btn.start()
 
+    def on_buy(self, event):
+        print u"开始抢票了"
+        tickets = self.ui_grid.cell_data
+        for each in tickets:
+            buyer = YongleBuyer(login_name=each["name"], password=each["pwd"], card_name=each["card_name"], card_no=each["card_no"],
+                                self_name=each["self_name"], self_phone=each["self_phone"])
+            data = {
+                "target": buyer.buy,
+                "args": each["ticket_url"],
+                "callback": self.after_buy_ticket
+            }
+            self.worker_job_queue.put(data)
+        self.btn_on_buy.Disable()
+
+    def after_buy_ticket(self, result):
+        self.ui_grid.set_buy_result(result)
+        if result["code"] != 200:
+            tickets = self.ui_grid.cell_data
+            for each in tickets:
+                if each["name"] == result['data']["name"]:
+                    buyer = YongleBuyer(login_name=each["name"], password=each["pwd"], card_name=each["card_name"],
+                                        card_no=each["card_no"],
+                                        self_name=each["self_name"], self_phone=each["self_phone"])
+                    data = {
+                        "target": buyer.buy,
+                        "args": each["ticket_url"],
+                        "callback": self.after_buy_ticket
+                    }
+                    self.worker_job_queue.put(data)
+                    break
+
+
     '''
     暂停购票按钮
     '''
     def off_buy(self, event):
-        self.ui_grid.add_one_empty_row()
-        print self.ui_grid.GetNumberRows()
         self.btn_on_buy.Enable()
         print u"停止抢票了"
 
@@ -234,13 +226,47 @@ class MainFrame(wx.Frame):
                     i += 1
                     if i == 1:
                         continue
-                    self.ticket_queue.put(row)
-                    self.ui_grid.add_one_row_data(name=row[0], state=u'待购票', price='0.00', pay_time_left='', info=row[5])
+
+                    try:
+                        name = row[0]
+                        productid = re.findall(r'ticket-(.+)\.html', row[6])[0]
+                        if not name:
+                            print u"账号不能为空[第{}行]".format(str(i))
+                            continue
+                        if not productid:
+                            print u"票务信息格式有错误[第{}行]".format(str(i))
+                            continue
+                        is_exits = False
+                        for each in self.tickets:
+                            if each["name"] == name and each["productid"] == productid:
+                                is_exits = True
+                                break
+                        if is_exits:
+                            continue
+                        self.tickets.append({
+                            "name": row[0],
+                            "pwd": row[1],
+                            "productid": productid,
+                            "card_name": row[2],
+                            "card_no": row[3],
+                        })
+                        self.ticket_queue.put(row)
+                        buyer = YongleBuyer(login_name=row[0], password=row[1], card_name=row[2], card_no=row[3], self_name=row[4], self_phone=row[5])
+                        self.worker_job_queue.put({"target": buyer.login, "args": {}, "callback": self.login_callback})
+                    except:
+                        print u"数据格式有问题[第{}行]".format(str(i))
+
+                    self.ui_grid.add_one_row_data(name=row[0], state=u'待购票', price='0.00', pay_time_left='', ticket_url=row[6]
+                                                  ,pwd= row[1], card_name=row[2], card_no=row[3], self_name=row[4],
+                                                  self_phone=row[5])
                 f.close()
             except :
                 wx.MessageBox(u"%s 文件格式错误"
                               % self.filename, "error tip",
                               style=wx.OK | wx.ICON_EXCLAMATION)
+
+    def login_callback(self, result):
+        self.ui_grid.set_login_status(result)
 
     def on_view(self, event):
         pass

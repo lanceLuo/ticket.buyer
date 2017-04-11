@@ -5,28 +5,28 @@ import wx.grid as gridlib
 
 class SimpleGrid(gridlib.Grid):
     data_row = 0
+    cell_data = []
 
     def __init__(self, parent):
-
-        gridlib.Grid.__init__(self, parent, -1, size=(880,290))
-
+        gridlib.Grid.__init__(self, parent, -1, size=(960, 290))
         self.moveTo = None
         self.Bind(wx.EVT_IDLE, self.OnIdle)
-
-        self.CreateGrid(5, 5)
+        self.SetRowLabelSize(30)
+        self.CreateGrid(5, 6)
         self.set_read_only()
         # simple cell formatting
-        self.SetColSize(0, 150)
-        self.SetColSize(1, 100)
-        self.SetColSize(2, 100)
-        self.SetColSize(3, 100)
-        self.SetColSize(4, 330)
-
+        self.SetColSize(0, 120)
+        self.SetColSize(1, 120)
+        self.SetColSize(2, 80)
+        self.SetColSize(3, 60)
+        self.SetColSize(4, 80)
+        self.SetColSize(5, 450)
         self.SetColLabelValue(0, u"帐号")
-        self.SetColLabelValue(1, u"购票状态")
-        self.SetColLabelValue(2, u"价格区间")
-        self.SetColLabelValue(3, u"剩余支付时间")
-        self.SetColLabelValue(4, u"购票信息")
+        self.SetColLabelValue(1, u"账号状态")
+        self.SetColLabelValue(2, u"购票状态")
+        self.SetColLabelValue(3, u"购票次数")
+        self.SetColLabelValue(4, u"价格")
+        self.SetColLabelValue(5, u"购票信息")
 
         # test all the events
         self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
@@ -159,19 +159,43 @@ class SimpleGrid(gridlib.Grid):
         self.SetCellValue(row=self.data_row, col=1, s=kwargs['state'])  # 购票状态
         self.SetCellValue(row=self.data_row, col=2, s=kwargs['price'])  # 价格区间
         self.SetCellValue(row=self.data_row, col=3, s=kwargs['pay_time_left'])  # 剩余支付时间
-        self.SetCellValue(row=self.data_row, col=4, s=kwargs['info'])  # 购票信息
+        self.SetCellValue(row=self.data_row, col=5, s=kwargs['ticket_url'])  # 购票信息
         self.data_row += 1
         row_num = self.GetNumberRows()
         if self.data_row == row_num:
             self.AppendRows(5)
             self.set_read_only()
 
+        self.cell_data.append(kwargs)
+
     def set_read_only(self):
         for i in range(0, self.GetNumberRows()):
+            self.SetRowSize(i, 25)
             for k in range(0, self.GetNumberCols()):
                 if k == 2:
                     continue
                 self.SetReadOnly(row=i, col=k, isReadOnly=True)
+
+    def set_login_status(self, r):
+        name = r["data"]["name"]
+
+        for i in range(0, self.GetNumberRows()):
+            if self.GetCellValue(row=i, col=0) == name:
+                if r["code"] == 200:
+                    self.SetCellValue(row=i, col=1, s=u"已登录")
+                else:
+                    print u"账号{}{}".format(name,r["msg"])
+                    self.SetCellValue(row=i, col=1, s=r["msg"])
+
+    def set_buy_result(self, r):
+        name = r["data"]["name"]
+        for i in range(0, self.GetNumberRows()):
+            if self.GetCellValue(row=i, col=0) == name:
+                if r["code"] == 200:
+                    self.SetCellValue(row=i, col=1, s=u"抢票成功")
+                else:
+                    print r["msg"]
+                    self.SetCellValue(row=i, col=1, s=u"抢票中")
 
 if __name__ == '__main__':
     pass

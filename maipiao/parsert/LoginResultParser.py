@@ -7,7 +7,7 @@ class LoginResultParser(HTMLParser):
 
     def __init__(self):
         HTMLParser.__init__(self)
-        self.login_err_msg = None
+        self.login_err_msg = ""
         self.in_err_box = False
 
     def handle_starttag(self, tag, attrs):
@@ -23,6 +23,8 @@ class LoginResultParser(HTMLParser):
 
     def handle_data(self, data):
         if self.in_err_box:
+            if not isinstance(data, unicode):
+                data = unicode(data.strip("\r\n"), "utf-8")
             self.login_err_msg = data
 
     def handle_endtag(self, tag):

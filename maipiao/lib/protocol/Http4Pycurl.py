@@ -78,8 +78,12 @@ class Http4Pycurl:
     '''
     GET请求
     '''
-    def get(self, url, retries=1):
+    def get(self, url, retries=3):
         r = self.curl(url, 'GET', None, retries)
+        if not r:
+            retries -= 1
+            if retries > 0:
+                return self.curl(url, 'GET', None, retries)
         return r
 
     def set_header(self):
@@ -88,16 +92,19 @@ class Http4Pycurl:
     def ajax_post(self, url, data, retries=1):
         pass
 
-    def post(self, url, data, retries=1):
-        return self.curl(url, 'POST', data, retries)
+    def post(self, url, data, retries=3):
+        r = self.curl(url, 'POST', data, retries)
+        if not r:
+            retries -= 1
+            if retries > 0:
+                return self.curl(url, 'POST', data, retries)
+        return r
 
-    def write_log(self, msg):
+    @classmethod
+    def write_log(cls, msg):
         fp = open(os.path.dirname(sys.argv[0]) + "/data/log/http.log", "a+")
         fp.write(msg + "\r\n")
         fp.close()
 
 if __name__ == '__main__':
-    handler = Http4Pycurl()
-    url = "http://shopping.damai.cn/order.aspx?_action=Immediately&info=%2bb0inMKF1n2S9vl%2ffq9I1agfYzebN35Q"
-    html = handler.get("http://www.baidu1.com/")
-    print  html
+    pass

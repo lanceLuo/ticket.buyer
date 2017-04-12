@@ -14,8 +14,7 @@ import re
 
 
 class YongleBuyer:
-
-    instances_dict = {}
+    __instance = {}
 
     def __init__(self, **kwargs):
         self.login_url = 'http://www.228.com.cn/auth/login'
@@ -23,6 +22,7 @@ class YongleBuyer:
         self.confirm_url = 'http://www.228.com.cn/cart/toOrderSure.html?pid={}&sd={}&quickBuyType=-1'
         self.check_login_url = 'http://www.228.com.cn/ajax/isLogin'
         self.is_login = False
+        self.id = kwargs["id"]
         self.login_name = str(kwargs['login_name'])
         self.password = str(kwargs['password'])
         self.card_type = '10'
@@ -37,13 +37,9 @@ class YongleBuyer:
         if not isinstance(self.self_name, unicode):
             self.self_name = self.self_name.decode('gb2312')
 
-    @staticmethod
-    def get_instant():
-        pass
-
     '''
     '''
-    def login(self, args):
+    def login(self):
         if not self.is_login:
             c = Http4Pycurl(self.cookie, 'http://www.228.com.cn')
             is_login = c.get(self.check_login_url)
@@ -64,30 +60,10 @@ class YongleBuyer:
                     else:
                         return {"code": 200, "msg": u"登录成功", "data": {"name": self.login_name}}
                 else:
-                    return {"code": 201, "msg": u"网络超时", "data": {"name": self.login_name}}
+                    return {"code": 500, "msg": u"网络超时", "data": {"name": self.login_name}}
             else:
                 self.is_login = True
         return {"code": 200, "msg": u"登录成功", "data": {"name": self.login_name}}
-
-    '''
-    登录
-    '''
-    def __init_login(self):
-        data = {
-            'username': self.login_name,
-            'password': self.password
-        }
-        curl = Http4Pycurl(self.cookie)
-        html = curl.post(self.login_url, data)
-        if isinstance(html, str):
-            lparser = LoginResultParser()
-            lparser.feed(html)
-            if lparser.login_err_msg:
-                print lparser.login_err_msg
-            else:
-                print u"登录成功"
-        else:
-            print u"登录失败"
 
     '''
     获取Cookie
@@ -107,7 +83,7 @@ class YongleBuyer:
     获取cookie保存地址
     '''
     def get_cookie_file_path(self):
-        cookie_dir = os.path.dirname(sys.argv[0]) + '/data/' + self.login_name + '/'
+        cookie_dir = os.path.dirname(sys.argv[0]) + '{}data{}{}{}'.format(os.sep, os.sep, self.login_name, os.sep)
         if not os.path.exists(cookie_dir):
             os.mkdir(cookie_dir)
 
@@ -136,15 +112,19 @@ class YongleBuyer:
     '''
     购票
     '''
-    def buy(self, ticket_url, is_self_take=False):
+    def buy(self, ticket_url, price):
         productid = re.findall(r'ticket-(.+)\.html', ticket_url)[0]
         info = self.get_ticket_info(ticket_url)
+        if not info:
+            return {"code": 500, "msg": u"查询余票失败", "data": {"name": self.login_name}}
         tickets = info.get('tickets', None)
         title = info.get('title', None)
         sd = s1 = s2 = ''
         if tickets and isinstance(tickets, list):
             for each in tickets:
                 if each['over']:
+                    continue
+                if len(price) == 2 and (int(price[1]) < int(each["price"]) or int(each["price"]) < int(price[0])):
                     continue
                 s1 = '{}{},'.format(s1, each['ticketid'])
                 s2 += '1,'
@@ -158,7 +138,7 @@ class YongleBuyer:
         confirm_url = self.confirm_url.format(productid, sd)
         confirm_html = Http4Pycurl(self.cookie, ticket_url).get(confirm_url)
         if not confirm_html:
-            return {"code": 202, "msg": u"网络超时", "data": {"name": self.login_name}}
+            return {"code": 500, "msg": u"网络超时", "data": {"name": self.login_name}}
 
         p_confirm = ConfirmOrderParser()
         p_confirm.feed(confirm_html)

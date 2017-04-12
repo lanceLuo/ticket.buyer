@@ -58,7 +58,6 @@ class Http4Pycurl:
             else:
                 msg = "[URL] {} | [CODE] {} | [TOTAL_TIME] {} | [PARAMS] {} | POST"\
                     .format(url, str(http_code),str(total_time), urllib.urlencode(data))
-
             self.write_log(msg)
 
             value = io_buf.getvalue()
@@ -78,7 +77,7 @@ class Http4Pycurl:
     '''
     GET请求
     '''
-    def get(self, url, retries=3):
+    def get(self, url, retries=2):
         r = self.curl(url, 'GET', None, retries)
         if not r:
             retries -= 1
@@ -92,11 +91,12 @@ class Http4Pycurl:
     def ajax_post(self, url, data, retries=1):
         pass
 
-    def post(self, url, data, retries=3):
+    def post(self, url, data, retries=2):
         r = self.curl(url, 'POST', data, retries)
         if not r:
             retries -= 1
             if retries > 0:
+                time.sleep(0.1)
                 return self.curl(url, 'POST', data, retries)
         return r
 

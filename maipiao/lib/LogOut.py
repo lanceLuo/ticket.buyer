@@ -5,6 +5,7 @@ import datetime
 import threading
 import os
 import sys
+import copy
 
 
 class LogOut:
@@ -22,7 +23,7 @@ class LogOut:
             if self.stdout.empty():
                 time.sleep(1)
                 continue
-            s = self.stdout.get()
+            s = self.stdout.get(False)
             if self.N > 40960:
                 self.N = 0
                 self.obj.Box.Clear()

@@ -24,7 +24,7 @@ class TicketInfoParser(HTMLParser):
             ticket = {
                 'productid': _attr(attrs, 'productid'),
                 'ticketid': _attr(attrs, 'p'),
-                'price': _attr(attrs, 'title'),
+                'price': _attr(attrs, 'rel'),
                 'over': True if css_cls and isinstance(css_cls, str) and 'over' in css_cls else False
             }
             self.tickets.append(ticket)

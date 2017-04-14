@@ -7,6 +7,7 @@ from lib.YongleBuyer import YongleBuyer
 from lib.BuyerGrid import *
 from lib.MyPage import MyPage
 from lib.LogOut import LogOut
+from lib.YongLe import *
 import csv
 import time
 import Queue
@@ -14,9 +15,11 @@ import threading
 import datetime
 import re
 
-MAX_WORKER_NUM = 5
+
+MAX_WORKER_NUM = 20
 EVT_LOGIN = 1
 EVT_BUY_TICKET = 2
+EVT_UPDATE_TICKET_INFO = 3
 
 
 class MainFrame(wx.Frame):
@@ -29,6 +32,7 @@ class MainFrame(wx.Frame):
         self.stop_buy_ticket = False
         self.title = u"购票助手"
         self.tickets = []
+        self.tickets_info = {}
         self.worker_poll = []
         wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(960, 600))
         self.SetMaxSize((960, 600))
@@ -53,11 +57,11 @@ class MainFrame(wx.Frame):
         self.notebook_tip = MyPage(self.notebook, 'tip')
         self.notebook.AddPage(self.notebook_tip, u"  提示信息  ")
         self.tip_log = LogOut(self.notebook_tip)
-        sys.stdout = self.tip_log
+        # sys.stdout = self.tip_log
         self.notebook_err = MyPage(self.notebook, 'err')
         self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
         self.err_log = LogOut(self.notebook_err)
-        sys.stderr = self.err_log
+        # sys.stderr = self.err_log
         for i in range(2):
             if i == 0:
                 t = threading.Thread(target=self.tip_log.output, name="S_" + str(i))
@@ -67,6 +71,7 @@ class MainFrame(wx.Frame):
             t.start()
             self.log_thread.append(t)
         self.init_worker_poll()
+        self.YongLe = YongLe(self.ui_grid)
 
     '''
     初始化线程池
@@ -89,19 +94,31 @@ class MainFrame(wx.Frame):
             if self.worker_job_queue.qsize() > 0:
                 try:
                     ticket, evt = self.worker_job_queue.get(False)
-                    buyer = YongleBuyer(login_name=ticket["name"], password=ticket["password"], card_name=ticket["card_name"], id=ticket["id"],
-                                        card_no=ticket["card_no"], self_name=ticket["self_take_name"], self_phone=ticket["self_take_phone"])
+                    buyer = YongleBuyer(ticket)
                     if evt == EVT_LOGIN:  # 登录
                         r = buyer.login()
                         self.login_callback(r, buyer.id)
                     elif evt == EVT_BUY_TICKET:  # 购票
-                        if not ticket["begin_time"] or ticket["begin_time"] > time.time() - 0.05:  # 达到购票时间
-                            r = buyer.buy(ticket["ticket_url"], ticket["price"])
+                        if not ticket["begin_time"] or time.time() - ticket["begin_time"] > 0.05:  # 达到购票时间
+                            r = buyer.buy(ticket["ticket_url"], ticket["price"], ticket["buy_num"], self.tickets_info[ticket['ticket_id']]['tickets'])
                             self.after_buy_ticket(r, buyer.id)
                             time.sleep(0.4)
                         else:  # 未到购票时间重新入队列
                             self.worker_job_queue.put((ticket, evt), False)
                             time.sleep(0.05)
+                    elif evt == EVT_UPDATE_TICKET_INFO:  # 更新票务信息
+                        if time.time() - ticket["update_time"] < 0:  # 未达到时间
+                            self.worker_job_queue.put((ticket, evt), False)
+                        else:
+                            is_success, data = buyer.get_ticket_info(ticket["ticket_url"])
+                            if is_success:
+                                print u"票务信息已更新-{}".format(data["title"])
+                                self.tickets_info[ticket["ticket_id"]]["tickets"] = data["tickets"]
+                                self.tickets_info[ticket["ticket_id"]]["title"] = data["title"]
+                            else:
+                                print u"{}{}".format(data, ticket["ticket_url"])
+                            ticket["update_time"] += 1
+                            self.worker_job_queue.put((ticket, evt))
                     else:
                         pass
                 except Queue.Empty:
@@ -190,56 +207,24 @@ class MainFrame(wx.Frame):
                             style=wx.OPEN,
                             wildcard=file_wildcard)
         if dlg.ShowModal() == wx.ID_OK:
-            self.filename = dlg.GetPath()
-            self.read_file()
-            # self.SetTitle(self.title + '--' + self.filename)
+            file_path = dlg.GetPath()
+            if not self.YongLe.open_file(file_path):
+                wx.MessageBox(u"{} 文件格式错误".format(file_path), "error tip",
+                              style=wx.OK | wx.ICON_EXCLAMATION)
         dlg.Destroy()
 
-    def read_file(self):
-        if self.filename:
-            try:
-                f = open(self.filename)
-                csv_reader = csv.reader(f)
-                i = 0
-                for row in csv_reader:
-                    i += 1
-                    if i == 1:
-                        continue
+    def add_ticket_info(self, ticket_id, ticket_url):
+        if not self.tickets_info.get(ticket_id, None):
+            ticket = {
+                "ticket_id": ticket_id,
+                "ticket_url": ticket_url,
+                "tickets": {},
+                "title": None,
+                "update_time": time.time()
+            }
+            self.tickets_info[ticket_id] = ticket
+            self.worker_job_queue.put((ticket, EVT_UPDATE_TICKET_INFO), False)  # 入队列准备登录
 
-                    try:
-                        ticket = {
-                            "name": row[0],  # 账号
-                            "password": row[1],  # 密码
-                            "card_name": row[2],  # 身份证姓名
-                            "card_no": row[3],  # 身份证卡号
-                            "self_take_name": row[4],  # 自取姓名
-                            "self_take_phone": row[5],  # 自取号码
-                            "buy_times": 0,  # 购买次数
-                            "ticket_url": row[6],  # 票务信息地址
-                            "ticket_id": re.findall(r'ticket-(.+)\.html', row[6])[0],  # 票务ID
-                            "price": [],  # 购买价格区间
-                            "login_status": 0,  # 登录状态
-                            "buy_times": 0,   # 购买次数
-                            "buy_status": 0,  # 购买状态
-                            "begin_time": 0,  # 开抢时间
-                        }
-                        if not ticket["name"]:
-                            print u"账号不能为空[第{}行]".format(str(i))
-                            continue
-                        if not ticket["ticket_id"]:
-                            print u"票务信息格式有错误[第{}行]".format(str(i))
-                            continue
-                        self.tickets.append(ticket)
-                        ticket["id"] = self.ui_grid.add_one_row_data(ticket)
-                        self.worker_job_queue.put((ticket, EVT_LOGIN), False)  # 入队列准备登录
-                    except:
-                        print u"数据格式有问题[第{}行]".format(str(i))
-
-                f.close()
-            except :
-                wx.MessageBox(u"%s 文件格式错误"
-                              % self.filename, "error tip",
-                              style=wx.OK | wx.ICON_EXCLAMATION)
 
     '''
     登录后回调处理
@@ -249,6 +234,10 @@ class MainFrame(wx.Frame):
             self.tickets[id]["login_status"] = 1
             self.ui_grid.set_login_status(id, True, None)
         else:
+            for i in self.tickets:
+                if i['id'] == id:
+                    self.worker_job_queue.put((i, EVT_LOGIN), False)
+                    break
             self.ui_grid.set_login_status(id, False, result["msg"])
 
     '''
@@ -264,10 +253,11 @@ class MainFrame(wx.Frame):
                 each["code_500"] += 1
                 if each["code_500"] >= 3:
                     each["code_500"] = 0
-                    each["begin_time"] = time.time() + 1
+                    each["begin_time"] = time.time() + 0.2
             self.worker_job_queue.put((each, EVT_BUY_TICKET))  # 入队列准备购票
         else:
             self.tickets[id]["buy_status"] = 1
+        print result["msg"]
 
     def on_view(self, event):
         pass

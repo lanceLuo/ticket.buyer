@@ -27,7 +27,7 @@ class LogOut:
             if self.N > 40960:
                 self.N = 0
                 self.obj.Box.Clear()
-            self.obj.Box.AppendText(s)
+            # self.obj.Box.AppendText(s)
             cdate = datetime.datetime.now().strftime('%d-%m-%y')
             dirname = os.path.dirname(sys.argv[0]) + "/data/log"
             if threading.current_thread().getName() == "S_0":

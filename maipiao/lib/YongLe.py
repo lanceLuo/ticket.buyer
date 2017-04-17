@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+import codecs
 import csv
 import time
 import re
+import os
+import sys
 import Queue
 import threading
+import datetime
 from lib.YongleBuyer import YongleBuyer
+
 EVT_LOGIN = 1
 EVT_BUY_TICKET = 2
 EVT_UPDATE_TICKET_INFO = 3
@@ -176,6 +181,19 @@ class YongLe(object):
 
     def off_buy(self):
         pass
+
+    def save(self):
+        csvfile = file(os.path.dirname(sys.argv[0]) + u'/data/购票成功记录-{}.csv'.format(datetime.datetime.now().strftime('%y_%m_%d_%H_%M_%S')), 'wb')
+        csvfile.write(codecs.BOM_UTF8)
+        writer = csv.writer(csvfile)
+        writer.writerow([u'账号', u'密码'])
+        data = []
+        for i in self.tickets:
+            if i["buy_status"]:
+                data.append([i["name"], i["password"]])
+        if data:
+            writer.writerows(data)
+        csvfile.close()
 
     '''
     抢票后回调处理

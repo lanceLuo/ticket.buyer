@@ -28,11 +28,21 @@
       <file leaf-file-name="MainFrame.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/frame/MainFrame.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="105" column="25" lean-forward="true" selection-start-line="105" selection-start-column="25" selection-end-line="105" selection-end-column="25" />
+            <state relative-caret-position="-67">
+              <caret line="23" column="57" lean-forward="false" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="57" />
               <folding>
                 <element signature="e#25#34#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LogOut.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/LogOut.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="30" column="64" lean-forward="false" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="64" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -47,19 +57,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="YongLe.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="YongLe.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/YongLe.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="147" column="51" lean-forward="false" selection-start-line="147" selection-start-column="51" selection-end-line="147" selection-end-column="51" />
+            <state relative-caret-position="19">
+              <caret line="175" column="40" lean-forward="true" selection-start-line="174" selection-start-column="22" selection-end-line="175" selection-end-column="40" />
               <folding>
-                <element signature="e#24#34#0" expanded="true" />
+                <element signature="e#24#37#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="YongleBuyer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="YongleBuyer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/YongleBuyer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="287">
@@ -154,8 +164,8 @@
       <find>add_ticket_info</find>
       <find>EVT_LOGIN</find>
       <find>worker_job_queue</find>
-      <find>after_buy_ticket</find>
       <find>MAX_WORKER_NUM</find>
+      <find>after_buy_ticket</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -177,11 +187,11 @@
         <option value="$PROJECT_DIR$/parsert/TicketInfoParser.py" />
         <option value="$PROJECT_DIR$/parsert/LoginResultParser.py" />
         <option value="$PROJECT_DIR$/lib/BuyerGrid.py" />
-        <option value="$PROJECT_DIR$/frame/MainFrame.py" />
-        <option value="$PROJECT_DIR$/lib/YongLe.py" />
         <option value="$PROJECT_DIR$/test/sample.py" />
         <option value="$PROJECT_DIR$/lib/protocol/Http4Pycurl.py" />
         <option value="$PROJECT_DIR$/lib/YongleBuyer.py" />
+        <option value="$PROJECT_DIR$/frame/MainFrame.py" />
+        <option value="$PROJECT_DIR$/lib/YongLe.py" />
       </list>
     </option>
   </component>
@@ -656,16 +666,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/frame/MainFrame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
-          <folding>
-            <element signature="e#25#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="50">
@@ -906,40 +906,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/BuyerGrid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="199" column="34" lean-forward="true" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/YongLe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="147" column="51" lean-forward="false" selection-start-line="147" selection-start-column="51" selection-end-line="147" selection-end-column="51" />
-          <folding>
-            <element signature="e#24#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/sample.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
           <caret line="13" column="46" lean-forward="false" selection-start-line="13" selection-start-column="46" selection-end-line="13" selection-end-column="46" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frame/MainFrame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="105" column="25" lean-forward="true" selection-start-line="105" selection-start-column="25" selection-end-line="105" selection-end-column="25" />
-          <folding>
-            <element signature="e#25#34#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -958,6 +930,42 @@
           <caret line="185" column="89" lean-forward="false" selection-start-line="185" selection-start-column="89" selection-end-line="185" selection-end-column="89" />
           <folding>
             <element signature="e#25#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frame/MainFrame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-67">
+          <caret line="23" column="57" lean-forward="false" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="57" />
+          <folding>
+            <element signature="e#25#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/LogOut.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="30" column="64" lean-forward="false" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/BuyerGrid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="521">
+          <caret line="199" column="34" lean-forward="true" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/YongLe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="175" column="40" lean-forward="true" selection-start-line="174" selection-start-column="22" selection-end-line="175" selection-end-column="40" />
+          <folding>
+            <element signature="e#24#37#0" expanded="true" />
           </folding>
         </state>
       </provider>

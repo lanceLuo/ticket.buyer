@@ -30,6 +30,9 @@ class MainFrame(wx.Frame):
         # 暂停购票按钮
         self.btn_off_buy = wx.Button(self, wx.ID_ANY, u"暂停购票", (860, 320), (80, 30), 0)
         self.btn_off_buy.Bind(wx.EVT_BUTTON, self.off_buy)
+        # 保存购票成功记录
+        self.btn_save_success = wx.Button(self, wx.ID_ANY, u"保存", (860, 380), (80, 30), 0)
+        self.btn_save_success.Bind(wx.EVT_BUTTON, self.save)
         # 错误信息面板
         self.notebook = wx.Notebook(self, wx.ID_ANY, (2, 300), (750, 240), 0 | wx.NO_BORDER)
         self.notebook.SetBackgroundColour(wx.Colour(236, 233, 216))
@@ -112,6 +115,11 @@ class MainFrame(wx.Frame):
     def off_buy(self, event):
         self.YongLe.off_buy()
         self.btn_on_buy.Enable()
+
+    def save(self, event):
+        if self.YongLe.save():
+            wx.MessageBox(u"", "error tip",
+                          style=wx.OK | wx.ICON_EXCLAMATION)
 
     '''
     打开开文件对话框

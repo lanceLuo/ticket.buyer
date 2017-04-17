@@ -58,7 +58,6 @@ class YongLe(object):
                 if time.time() >= update_time:
                     status, data = YongleBuyer.get_ticket_info(ticket_id)
                     if status:
-                        print data
                         self.tickets_info[ticket_id] = data
                         self.worker_ticket_update_queue.put((ticket_id, update_time + 1))
                     else:
@@ -144,20 +143,15 @@ class YongLe(object):
                 continue
             if self.worker_job_queue.qsize() > 0:
                 try:
-                    ticket, evt = self.worker_job_queue.get(False)
-                    buyer = YongleBuyer(ticket)
-                    if evt == EVT_BUY_TICKET:  # 购票
-                        if not ticket["begin_time"] or time.time() - ticket["begin_time"] > 0.05:  # 达到购票时间
-                            r = buyer.buy(ticket["ticket_url"], ticket["price"], ticket["buy_num"], self.tickets_info[ticket['ticket_id']]['tickets'])
-                            self.after_buy_ticket(r, buyer.id)
-                            time.sleep(0.2)
-                        else:  # 未到购票时间重新入队列
-                            self.worker_job_queue.put((ticket, evt), False)
-                            time.sleep(0.05)
-                    elif evt == EVT_UPDATE_TICKET_INFO:  # 更新票务信息
-                        pass
-                    else:
-                        pass
+                    ticket = self.worker_job_queue.get(False)
+                    if not ticket["begin_time"] or time.time() - ticket["begin_time"] > 0.05:  # 达到购票时间
+                        buyer = YongleBuyer(ticket)
+                        r = buyer.buy(ticket["ticket_url"], ticket["price"], ticket["buy_num"], self.tickets_info[ticket['ticket_id']]["tickets"])
+                        self.after_buy_ticket(r, buyer.id)
+                        time.sleep(0.2)
+                    else:  # 未到购票时间重新入队列
+                        self.worker_job_queue.put(ticket, False)
+                        time.sleep(0.05)
                 except Queue.Empty:
                     time.sleep(0.1)
             else:
@@ -171,13 +165,14 @@ class YongLe(object):
         exists_job = False
         for each in self.tickets:
             if not each["buy_status"]:
-                self.worker_job_queue.put((each, EVT_BUY_TICKET))
+                self.worker_job_queue.put(each)
                 exists_job = True
         if exists_job:
             self.stop_buy_ticket = False
-            self.btn_on_buy.Disable()
+            return True
         else:
             print u"没有需要购票的信息"
+            return False
 
     def off_buy(self):
         pass
@@ -196,7 +191,7 @@ class YongLe(object):
                 if each["code_500"] >= 3:
                     each["code_500"] = 0
                     each["begin_time"] = time.time() + 0.2
-            self.worker_job_queue.put((each, EVT_BUY_TICKET))  # 入队列准备购票
+            self.worker_job_queue.put(each)  # 入队列准备购票
         else:
             self.tickets[id]["buy_status"] = 1
         print result["msg"]

@@ -7,18 +7,7 @@ from lib.BuyerGrid import *
 from lib.MyPage import MyPage
 from lib.LogOut import LogOut
 from lib.YongLe import *
-import csv
-import time
-import Queue
 import threading
-import datetime
-import re
-
-
-MAX_WORKER_NUM = 20
-EVT_LOGIN = 1
-EVT_BUY_TICKET = 2
-EVT_UPDATE_TICKET_INFO = 3
 
 
 class MainFrame(wx.Frame):
@@ -28,7 +17,6 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(960, 600))
         self.SetMaxSize((960, 600))
         self.SetMinSize((960, 600))
-        self.log_thread = []
         # 设置背景颜色
         self.SetBackgroundColour(wx.Colour(236, 233, 216))
         self.create_menu_bar()
@@ -54,6 +42,7 @@ class MainFrame(wx.Frame):
         self.notebook.AddPage(self.notebook_err, u"  错误信息  ")
         self.err_log = LogOut(self.notebook_err)
         # sys.stderr = self.err_log
+        self.log_thread = []
         for i in range(2):
             if i == 0:
                 t = threading.Thread(target=self.tip_log.output, name="S_" + str(i))

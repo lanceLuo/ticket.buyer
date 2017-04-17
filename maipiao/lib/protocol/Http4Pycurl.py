@@ -44,10 +44,10 @@ class Http4Pycurl:
             total_time = c.getinfo(pycurl.TOTAL_TIME)
             value = io_buf.getvalue()
             if method == 'GET':
-                msg = "[URL] {} | [CODE] {} | [TOTAL_TIME] {} | GET".format(url, str(http_code), str(total_time))
+                msg = u"[URL] {} | [CODE] {} | [TOTAL_TIME] {} | GET".format(url, str(http_code), str(total_time))
             else:
-                msg = "[URL] {} | [CODE] {} | [TOTAL_TIME] {} } [PARAMS] {} | POST"\
-                    .format(url, str(http_code),str(total_time), urllib.urlencode(data))
+                msg = u"[URL] {} | [CODE] {} | [TOTAL_TIME] {} | [PARAMS] {} | POST"\
+                    .format(url, str(http_code), str(total_time), urllib.urlencode(data))
             self.write_log(msg)
             if http_code >= 400:
                 return False, c.errstr()
@@ -62,12 +62,12 @@ class Http4Pycurl:
     GET请求
     '''
     def get(self, url, num_retry=2):
-        r = self.curl(url, 'GET', None)
-        if not r:
+        s, r = self.curl(url, 'GET', None)
+        if not s:
             num_retry -= 1
             if num_retry > 0:
                 return self.get(url, 'GET', num_retry)
-        return r
+        return s, r
 
     def set_header(self):
         pass
@@ -76,13 +76,13 @@ class Http4Pycurl:
         pass
 
     def post(self, url, data, num_retry=2):
-        r = self.curl(url, 'POST', data)
-        if not r:
+        s, r = self.curl(url, 'POST', data)
+        if not s:
             num_retry -= 1
             if num_retry > 0:
                 time.sleep(0.1)
                 return self.post(url, data, num_retry)
-        return r
+        return s, r
 
     def write_log(self, msg):
         d = datetime.datetime.now().strftime('%y-%d-%m')

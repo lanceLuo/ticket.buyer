@@ -122,11 +122,11 @@ class YongLe(object):
                     self.worker_login_queue.put(ticket["id"])
                 except:
                     print u"数据格式有问题[第{}行]".format(str(i))
-                f.close()
-                return True
         except:
             f.close()
             return False
+        f.close()
+        return True
 
     '''
     初始化线程池
@@ -194,6 +194,7 @@ class YongLe(object):
         if data:
             writer.writerows(data)
         csvfile.close()
+        return True
 
     '''
     抢票后回调处理

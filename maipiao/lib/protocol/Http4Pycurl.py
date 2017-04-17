@@ -66,7 +66,7 @@ class Http4Pycurl:
         if not s:
             num_retry -= 1
             if num_retry > 0:
-                return self.get(url, 'GET', num_retry)
+                return self.get(url, num_retry)
         return s, r
 
     def set_header(self):

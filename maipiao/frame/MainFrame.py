@@ -118,7 +118,7 @@ class MainFrame(wx.Frame):
 
     def save(self, event):
         if self.YongLe.save():
-            wx.MessageBox(u"", "error tip",
+            wx.MessageBox(u"保存成功", "提示",
                           style=wx.OK | wx.ICON_EXCLAMATION)
 
     '''
@@ -133,7 +133,7 @@ class MainFrame(wx.Frame):
         if dlg.ShowModal() == wx.ID_OK:
             file_path = dlg.GetPath()
             if not self.YongLe.open_file(file_path):
-                wx.MessageBox(u"{} 文件格式错误".format(file_path), "error tip",
+                wx.MessageBox(u"{} 文件格式错误".format(file_path), u"错误",
                               style=wx.OK | wx.ICON_EXCLAMATION)
         dlg.Destroy()
 

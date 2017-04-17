@@ -25,11 +25,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainFrame.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainFrame.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/frame/MainFrame.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-67">
-              <caret line="23" column="57" lean-forward="false" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="57" />
+            <state relative-caret-position="731">
+              <caret line="131" column="51" lean-forward="true" selection-start-line="131" selection-start-column="51" selection-end-line="131" selection-end-column="51" />
               <folding>
                 <element signature="e#25#34#0" expanded="true" />
               </folding>
@@ -50,18 +50,18 @@
       <file leaf-file-name="BuyerGrid.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/BuyerGrid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="521">
+            <state relative-caret-position="407">
               <caret line="199" column="34" lean-forward="true" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="YongLe.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="YongLe.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/YongLe.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="175" column="40" lean-forward="true" selection-start-line="174" selection-start-column="22" selection-end-line="175" selection-end-column="40" />
+            <state relative-caret-position="402">
+              <caret line="196" column="19" lean-forward="false" selection-start-line="196" selection-start-column="19" selection-end-line="196" selection-end-column="19" />
               <folding>
                 <element signature="e#24#37#0" expanded="true" />
               </folding>
@@ -84,8 +84,8 @@
       <file leaf-file-name="Http4Pycurl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/protocol/Http4Pycurl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="52" column="40" lean-forward="true" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
+            <state relative-caret-position="488">
+              <caret line="77" column="43" lean-forward="true" selection-start-line="77" selection-start-column="43" selection-end-line="77" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -94,9 +94,11 @@
       <file leaf-file-name="TicketApp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TicketApp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="4" column="0" lean-forward="false" selection-start-line="6" selection-start-column="31" selection-end-line="7" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="190">
+              <caret line="10" column="21" lean-forward="true" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+              <folding>
+                <element signature="e#25#34#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -104,7 +106,7 @@
       <file leaf-file-name="ririshun.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../registration_robot/ririshun.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="779">
+            <state relative-caret-position="514">
               <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding>
                 <marker date="1492267467813" expanded="true" signature="249:254" ph="..." />
@@ -116,8 +118,8 @@
       <file leaf-file-name="sample.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/sample.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="13" column="46" lean-forward="false" selection-start-line="13" selection-start-column="46" selection-end-line="13" selection-end-column="46" />
+            <state relative-caret-position="171">
+              <caret line="14" column="35" lean-forward="false" selection-start-line="14" selection-start-column="35" selection-end-line="14" selection-end-column="35" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -187,11 +189,11 @@
         <option value="$PROJECT_DIR$/parsert/TicketInfoParser.py" />
         <option value="$PROJECT_DIR$/parsert/LoginResultParser.py" />
         <option value="$PROJECT_DIR$/lib/BuyerGrid.py" />
+        <option value="$PROJECT_DIR$/lib/YongleBuyer.py" />
         <option value="$PROJECT_DIR$/test/sample.py" />
         <option value="$PROJECT_DIR$/lib/protocol/Http4Pycurl.py" />
-        <option value="$PROJECT_DIR$/lib/YongleBuyer.py" />
-        <option value="$PROJECT_DIR$/frame/MainFrame.py" />
         <option value="$PROJECT_DIR$/lib/YongLe.py" />
+        <option value="$PROJECT_DIR$/frame/MainFrame.py" />
       </list>
     </option>
   </component>
@@ -692,7 +694,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
           <caret line="8" column="28" lean-forward="false" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
-          <folding />
+          <folding>
+            <element signature="e#25#34#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -710,7 +714,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#25#34#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -872,24 +878,6 @@
     <entry file="file://C:/Python27/Lib/Queue.py" />
     <entry file="file://C:/Python27/Lib/site-packages/wx-3.0-msw/wx/_core.py" />
     <entry file="file://C:/Python27/Lib/threading.py" />
-    <entry file="file://$PROJECT_DIR$/../registration_robot/ririshun.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="779">
-          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding>
-            <marker date="1492267467813" expanded="true" signature="249:254" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TicketApp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="0" lean-forward="false" selection-start-line="6" selection-start-column="31" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharm2016.3/system/python_stubs/-762174762/pycurl.py" />
     <entry file="file://$USER_HOME$/.PyCharm2016.3/system/python_stubs/-762174762/exceptions.py" />
     <entry file="file://$PROJECT_DIR$/parsert/TicketInfoParser.py">
@@ -906,10 +894,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/LogOut.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="30" column="64" lean-forward="false" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TicketApp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="21" lean-forward="true" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+          <folding>
+            <element signature="e#25#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../registration_robot/ririshun.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding>
+            <marker date="1492267467813" expanded="true" signature="249:254" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/sample.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="13" column="46" lean-forward="false" selection-start-line="13" selection-start-column="46" selection-end-line="13" selection-end-column="46" />
+        <state relative-caret-position="171">
+          <caret line="14" column="35" lean-forward="false" selection-start-line="14" selection-start-column="35" selection-end-line="14" selection-end-column="35" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
@@ -918,8 +934,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/protocol/Http4Pycurl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="52" column="40" lean-forward="true" selection-start-line="52" selection-start-column="40" selection-end-line="52" selection-end-column="40" />
+        <state relative-caret-position="488">
+          <caret line="77" column="43" lean-forward="true" selection-start-line="77" selection-start-column="43" selection-end-line="77" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/YongLe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="196" column="19" lean-forward="false" selection-start-line="196" selection-start-column="19" selection-end-line="196" selection-end-column="19" />
+          <folding>
+            <element signature="e#24#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/BuyerGrid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="407">
+          <caret line="199" column="34" lean-forward="true" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
           <folding />
         </state>
       </provider>
@@ -936,36 +970,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/frame/MainFrame.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-67">
-          <caret line="23" column="57" lean-forward="false" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="57" />
+        <state relative-caret-position="731">
+          <caret line="131" column="51" lean-forward="true" selection-start-line="131" selection-start-column="51" selection-end-line="131" selection-end-column="51" />
           <folding>
             <element signature="e#25#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/LogOut.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="30" column="64" lean-forward="false" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/BuyerGrid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="199" column="34" lean-forward="true" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/YongLe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="175" column="40" lean-forward="true" selection-start-line="174" selection-start-column="22" selection-end-line="175" selection-end-column="40" />
-          <folding>
-            <element signature="e#24#37#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -2,13 +2,74 @@
 import csv
 import time
 import re
+import Queue
+import threading
+from lib.YongleBuyer import YongleBuyer
 EVT_LOGIN = 1
+EVT_BUY_TICKET = 2
+EVT_UPDATE_TICKET_INFO = 3
+MAX_WORKER_NUM = 10
 
-class YongLe:
+
+class YongLe(object):
 
     def __init__(self, grid):
         self.grid = grid
         self.tickets = []
+        self.stop_buy_ticket = False
+        self.worker_job_queue = Queue.Queue()
+        self.worker_login_queue = Queue.Queue()
+        self.worker_ticket_update_queue = Queue.Queue()
+        self.worker_poll = []
+        self.tickets_info = {}
+        self.init_worker_poll()
+        self.worker_login = threading.Thread(target=self.do_login, name="worker_login")
+        self.worker_login.setDaemon(1)
+        self.worker_login.start()
+        self.worker_update_ticket = threading.Thread(target=self.do_update_ticket, name="worker_update_ticket")
+        self.worker_update_ticket.setDaemon(1)
+        self.worker_update_ticket.start()
+
+    def do_login(self):
+        while True:
+            if self.worker_login_queue.empty():
+                time.sleep(0.5)
+                continue
+            try:
+                row_id = self.worker_login_queue.get(False)
+                ticket = self.tickets[row_id]
+                result = YongleBuyer(ticket).login()
+                if result["code"] == 200:
+                    ticket["login_status"] = 1
+                    self.grid.set_login_status(row_id, True, None)
+                else:
+                    self.grid.set_login_status(row_id, False, result["msg"])
+                    self.worker_login_queue.put(row_id)
+            except Queue.Empty:
+                pass
+
+    def do_update_ticket(self):
+        while True:
+            if self.worker_ticket_update_queue.empty():
+                time.sleep(0.5)
+                continue
+            try:
+                ticket_id,update_time = self.worker_ticket_update_queue.get(False)
+                if time.time() >= update_time:
+                    status, data = YongleBuyer.get_ticket_info(ticket_id)
+                    if status:
+                        print data
+                        self.tickets_info[ticket_id] = data
+                        self.worker_ticket_update_queue.put((ticket_id, update_time + 1))
+                    else:
+                        print u"获取不到票务信息--{}".format(data)
+                        time.time(0.2)
+                        self.worker_ticket_update_queue.put((ticket_id, update_time))
+                else:
+                    self.worker_ticket_update_queue.put((ticket_id,update_time))
+
+            except Queue.Empty:
+                pass
 
     '''
     '''
@@ -32,8 +93,7 @@ class YongLe:
                         "card_no": row[3][1:],  # 身份证卡号
                         "price": [] if len(row[4][1:].split(",")) != 2 else row[4][1:].split(","),  # 购买价格区间
                         "buy_num": 1 if not row[5][1:] else row[5][1:],  # 购票张数
-                        "begin_time": 0 if not row[6] else time.mktime(time.strptime(row[6][1:], '%Y-%m-%d %H:%M:%S')),
-                    # 开抢时间
+                        "begin_time": 0 if not row[6] else time.mktime(time.strptime(row[6][1:], '%Y-%m-%d %H:%M:%S')), # 开抢时间
                         "ticket_url": row[7][1:],  # 票务信息地址
                         "ticket_id": re.findall(r'ticket-(.+)\.html', row[7][1:])[0],  # 票务ID
                         "self_take_name": None,  # 自取姓名
@@ -52,10 +112,10 @@ class YongLe:
                     for o in self.tickets:
                         if o["name"] == ticket["name"] and o["ticket_id"] == ticket["ticket_id"]:
                             continue
+                    ticket["id"] = self.grid.add_one_row_data(ticket)
                     self.tickets.append(ticket)
-                    ticket["id"] = self.ui_grid.add_one_row_data(ticket)
-                    self.add_ticket_info(ticket["ticket_id"], ticket["ticket_url"])
-                    self.worker_job_queue.put((ticket, EVT_LOGIN), False)  # 入队列准备登录
+                    self.worker_ticket_update_queue.put((ticket["ticket_id"], time.time()))  # 添加票务信息
+                    self.worker_login_queue.put(ticket["id"])
                 except:
                     print u"数据格式有问题[第{}行]".format(str(i))
                 f.close()
@@ -63,3 +123,80 @@ class YongLe:
         except:
             f.close()
             return False
+
+    '''
+    初始化线程池
+    '''
+    def init_worker_poll(self):
+        for i in range(MAX_WORKER_NUM):
+            worker = threading.Thread(target=self.do_worker, name="worker_" + str(i))
+            worker.setDaemon(1)
+            worker.start()
+            self.worker_poll.append(worker)
+
+    '''
+    worker线程处理
+    '''
+    def do_worker(self):
+        while True:
+            if self.stop_buy_ticket:
+                time.sleep(0.1)
+                continue
+            if self.worker_job_queue.qsize() > 0:
+                try:
+                    ticket, evt = self.worker_job_queue.get(False)
+                    buyer = YongleBuyer(ticket)
+                    if evt == EVT_BUY_TICKET:  # 购票
+                        if not ticket["begin_time"] or time.time() - ticket["begin_time"] > 0.05:  # 达到购票时间
+                            r = buyer.buy(ticket["ticket_url"], ticket["price"], ticket["buy_num"], self.tickets_info[ticket['ticket_id']]['tickets'])
+                            self.after_buy_ticket(r, buyer.id)
+                            time.sleep(0.2)
+                        else:  # 未到购票时间重新入队列
+                            self.worker_job_queue.put((ticket, evt), False)
+                            time.sleep(0.05)
+                    elif evt == EVT_UPDATE_TICKET_INFO:  # 更新票务信息
+                        pass
+                    else:
+                        pass
+                except Queue.Empty:
+                    time.sleep(0.1)
+            else:
+                time.sleep(0.1)
+
+    '''
+
+    '''
+    def on_buy(self):
+        print u"开始抢票了"
+        exists_job = False
+        for each in self.tickets:
+            if not each["buy_status"]:
+                self.worker_job_queue.put((each, EVT_BUY_TICKET))
+                exists_job = True
+        if exists_job:
+            self.stop_buy_ticket = False
+            self.btn_on_buy.Disable()
+        else:
+            print u"没有需要购票的信息"
+
+    def off_buy(self):
+        pass
+
+    '''
+    抢票后回调处理
+    '''
+    def after_buy_ticket(self, result, id):
+        self.grid.set_buy_result(result)
+        if result["code"] != 200:
+            each = self.tickets[id]
+            if result["code"] == 500:
+                if not each.get("code_500", None):
+                    each["code_500"] = 0
+                each["code_500"] += 1
+                if each["code_500"] >= 3:
+                    each["code_500"] = 0
+                    each["begin_time"] = time.time() + 0.2
+            self.worker_job_queue.put((each, EVT_BUY_TICKET))  # 入队列准备购票
+        else:
+            self.tickets[id]["buy_status"] = 1
+        print result["msg"]

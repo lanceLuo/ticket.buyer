@@ -7,14 +7,12 @@ import datetime
 class SimpleGrid(gridlib.Grid):
     data_row = 0
 
-    def __init__(self, parent, data):
+    def __init__(self, parent):
         gridlib.Grid.__init__(self, parent, -1, size=(960, 290))
-        self.grid_data = data
         self.moveTo = None
         self.Bind(wx.EVT_IDLE, self.OnIdle)
         self.SetRowLabelSize(30)
         self.CreateGrid(10, 6)
-        self.set_read_only()
         # simple cell formatting
         self.SetColSize(0, 90)
         self.SetColSize(1, 120)
@@ -184,11 +182,11 @@ class SimpleGrid(gridlib.Grid):
                     continue
                 self.SetReadOnly(row=i, col=k, isReadOnly=True)
 
-    def set_login_status(self, id, is_success, msg=None):
+    def set_login_status(self, ticket_id, is_success, msg=None):
         if is_success:
-            self.SetCellValue(row=id, col=1, s=u"已登录")
+            self.SetCellValue(row=ticket_id, col=1, s=u"已登录")
         else:
-            self.SetCellValue(row=id, col=1, s=msg)
+            self.SetCellValue(row=ticket_id, col=1, s=msg)
 
     '''
     '''

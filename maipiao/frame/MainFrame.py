@@ -3,7 +3,6 @@
 import wx
 import os
 import sys
-from lib.YongleBuyer import YongleBuyer
 from lib.BuyerGrid import *
 from lib.MyPage import MyPage
 from lib.LogOut import LogOut
@@ -23,27 +22,20 @@ EVT_UPDATE_TICKET_INFO = 3
 
 
 class MainFrame(wx.Frame):
-    log_thread = []
-    th_buyer = []  # 线程数
-    filename = None
-    worker_job_queue = Queue.Queue()
 
     def __init__(self, parent):
-        self.stop_buy_ticket = False
         self.title = u"购票助手"
-        self.tickets = []
-        self.tickets_info = {}
-        self.worker_poll = []
         wx.Frame.__init__(self, parent, wx.ID_ANY, self.title, size=(960, 600))
         self.SetMaxSize((960, 600))
         self.SetMinSize((960, 600))
-
+        self.log_thread = []
         # 设置背景颜色
         self.SetBackgroundColour(wx.Colour(236, 233, 216))
         self.create_menu_bar()
         # 设置软件ICON
         self.SetIcon(wx.Icon(os.path.dirname(sys.argv[0]) + '/res/title.ico', wx.BITMAP_TYPE_ICO))
-        self.ui_grid = SimpleGrid(self, self.tickets)
+        self.ui_grid = SimpleGrid(self)
+        self.YongLe = YongLe(self.ui_grid)
         # 开始购票按钮
         self.btn_on_buy = wx.Button(self, wx.ID_ANY, u"开始购票", (760, 320), (80, 30), 0)
         self.btn_on_buy.Bind(wx.EVT_BUTTON, self.on_buy)
@@ -70,61 +62,6 @@ class MainFrame(wx.Frame):
             t.setDaemon(1)
             t.start()
             self.log_thread.append(t)
-        self.init_worker_poll()
-        self.YongLe = YongLe(self.ui_grid)
-
-    '''
-    初始化线程池
-    '''
-    def init_worker_poll(self):
-        for i in range(MAX_WORKER_NUM):
-            worker = threading.Thread(target=self.do_worker, name="worker_" + str(i))
-            worker.setDaemon(1)
-            worker.start()
-            self.worker_poll.append(worker)
-
-    '''
-    worker线程处理
-    '''
-    def do_worker(self):
-        while True:
-            if self.stop_buy_ticket:
-                time.sleep(0.2)
-                continue
-            if self.worker_job_queue.qsize() > 0:
-                try:
-                    ticket, evt = self.worker_job_queue.get(False)
-                    buyer = YongleBuyer(ticket)
-                    if evt == EVT_LOGIN:  # 登录
-                        r = buyer.login()
-                        self.login_callback(r, buyer.id)
-                    elif evt == EVT_BUY_TICKET:  # 购票
-                        if not ticket["begin_time"] or time.time() - ticket["begin_time"] > 0.05:  # 达到购票时间
-                            r = buyer.buy(ticket["ticket_url"], ticket["price"], ticket["buy_num"], self.tickets_info[ticket['ticket_id']]['tickets'])
-                            self.after_buy_ticket(r, buyer.id)
-                            time.sleep(0.4)
-                        else:  # 未到购票时间重新入队列
-                            self.worker_job_queue.put((ticket, evt), False)
-                            time.sleep(0.05)
-                    elif evt == EVT_UPDATE_TICKET_INFO:  # 更新票务信息
-                        if time.time() - ticket["update_time"] < 0:  # 未达到时间
-                            self.worker_job_queue.put((ticket, evt), False)
-                        else:
-                            is_success, data = buyer.get_ticket_info(ticket["ticket_url"])
-                            if is_success:
-                                print u"票务信息已更新-{}".format(data["title"])
-                                self.tickets_info[ticket["ticket_id"]]["tickets"] = data["tickets"]
-                                self.tickets_info[ticket["ticket_id"]]["title"] = data["title"]
-                            else:
-                                print u"{}{}".format(data, ticket["ticket_url"])
-                            ticket["update_time"] += 1
-                            self.worker_job_queue.put((ticket, evt))
-                    else:
-                        pass
-                except Queue.Empty:
-                    time.sleep(0.1)
-            else:
-                time.sleep(0.1)
 
 
     '''
@@ -177,25 +114,15 @@ class MainFrame(wx.Frame):
     开始抢票
     '''
     def on_buy(self, event):
-        print u"开始抢票了"
-        exists_job = False
-        for each in self.tickets:
-            if not each["buy_status"]:
-                self.worker_job_queue.put((each, EVT_BUY_TICKET))
-                exists_job = True
-        if exists_job:
-            self.stop_buy_ticket = False
+        if self.YongLe.on_buy():
             self.btn_on_buy.Disable()
-        else:
-            print u"没有需要购票的信息"
 
     '''
     暂停购票按钮
     '''
     def off_buy(self, event):
-        self.stop_buy_ticket = True
+        self.YongLe.off_buy()
         self.btn_on_buy.Enable()
-        print u"停止抢票了"
 
     '''
     打开开文件对话框
@@ -212,52 +139,6 @@ class MainFrame(wx.Frame):
                 wx.MessageBox(u"{} 文件格式错误".format(file_path), "error tip",
                               style=wx.OK | wx.ICON_EXCLAMATION)
         dlg.Destroy()
-
-    def add_ticket_info(self, ticket_id, ticket_url):
-        if not self.tickets_info.get(ticket_id, None):
-            ticket = {
-                "ticket_id": ticket_id,
-                "ticket_url": ticket_url,
-                "tickets": {},
-                "title": None,
-                "update_time": time.time()
-            }
-            self.tickets_info[ticket_id] = ticket
-            self.worker_job_queue.put((ticket, EVT_UPDATE_TICKET_INFO), False)  # 入队列准备登录
-
-
-    '''
-    登录后回调处理
-    '''
-    def login_callback(self, result, id):
-        if result["code"] == 200:
-            self.tickets[id]["login_status"] = 1
-            self.ui_grid.set_login_status(id, True, None)
-        else:
-            for i in self.tickets:
-                if i['id'] == id:
-                    self.worker_job_queue.put((i, EVT_LOGIN), False)
-                    break
-            self.ui_grid.set_login_status(id, False, result["msg"])
-
-    '''
-    抢票后回调处理
-    '''
-    def after_buy_ticket(self, result, id):
-        self.ui_grid.set_buy_result(result)
-        if result["code"] != 200:
-            each = self.tickets[id]
-            if result["code"] == 500:
-                if not each.get("code_500", None):
-                    each["code_500"] = 0
-                each["code_500"] += 1
-                if each["code_500"] >= 3:
-                    each["code_500"] = 0
-                    each["begin_time"] = time.time() + 0.2
-            self.worker_job_queue.put((each, EVT_BUY_TICKET))  # 入队列准备购票
-        else:
-            self.tickets[id]["buy_status"] = 1
-        print result["msg"]
 
     def on_view(self, event):
         pass

@@ -99,8 +99,10 @@ class YongleBuyer:
 
     '''
     '''
-    def get_ticket_info(self, url):
-        status, data = Http4Pycurl(self.cookie, 'http://www.228.com.cn').get(url)
+    @staticmethod
+    def get_ticket_info(ticket_id):
+        url = "http://www.228.com.cn/ticket-{}.html".format(str(ticket_id))
+        status, data = Http4Pycurl(None, 'http://www.228.com.cn').get(url)
         if not status:
             return False, data
         p = TicketInfoParser()
